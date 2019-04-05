@@ -17,23 +17,25 @@ void paintPaddle(struct Gamepiece paddle) {
     return;
 }
 
-void initBall(struct Gamestate *g, int direction, int lines, int cols) {
+void initBall(struct Gamestate *g, int direction) {
     char *readysetgo[] = {"READY", "SET", "GO"};
-    int i;
+    int i, l;
     if (direction == 1) { /* player's serve */
         g->ball.x = 2;
     } else {
-        g->ball.x = cols - 3;
+        g->ball.x = g->cols - 3;
     }
-    g->ball.y = lines / 2;
+    g->ball.y = g->lines / 2;
     g->ball.speedY = 1;
     g->ball.speedX = 1 * direction;
 
     for (i = 0; i < 3; i++) {
-        mvprintw(0, cols/2, "%s    ", readysetgo[i]);
+        l = strlen(readysetgo[i]);
+        mvprintw(g->lines/2, g->cols/2 - l/2, "%s", readysetgo[i]);
         refresh();
         sleep(1);
-    }
+        mvprintw(g->lines/2, g->cols/2 - l/2, "%s", "          ");
+    } // TODO something better for blanking the line
 
     return;
 }
@@ -63,12 +65,12 @@ void updateBall(struct Gamestate *g) {
         if (g->ball.x == 0) { // || ball.x == COLS) {
             g->comp.score++;
             mvprintw(LINES - 1, COLS - 3, "%d", g->comp.score);
-            initBall(g, 1, LINES, COLS);
+            initBall(g, 1);
             g->gameOver = 1;
         } else if (g->ball.x == COLS) {
             g->player.score++;
             mvprintw(LINES - 1, 0, "%d", g->player.score);
-            initBall(g, -1, LINES, COLS);
+            initBall(g, -1);
             g->gameOver = 1;
         }
         if (g->ball.x == 1) {
