@@ -8,6 +8,7 @@
 #include <unistd.h>
 #define DELAY_60FPS 16667 
 #define CEILING 3
+#define EXIT_MESSAGE "DONE press any key"
 
 struct Gamepiece {
     int x, y, size, moved, speedX, speedY, score;
