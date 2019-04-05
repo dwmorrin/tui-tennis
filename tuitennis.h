@@ -9,12 +9,12 @@ struct Gamepiece {
 };
 
 struct Gamestate {
-    int input, speed, frame, newFrameFlag, gameOver;
+    int input, speed, frame, newFrameFlag, gameOver, lines, cols;
     struct Gamepiece player, comp, ball;
 };
 
 long long getElapsed(struct timeval t0, struct timeval t1);
-void initBall(struct Gamestate *g, int direction, int lines, int cols);
+void initBall(struct Gamestate *g, int direction);
 void paintPaddle(struct Gamepiece paddle);
 void updateBall(struct Gamestate *g);
 void updatePaddles(struct Gamestate *g);

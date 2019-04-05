@@ -23,6 +23,8 @@ int main() {
     g.frame = 0;
     g.newFrameFlag = 1;
     g.gameOver = 1;
+    g.lines = LINES;
+    g.cols = COLS;
 
     /* timer init */
     struct timeval t1, t0;
