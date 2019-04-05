@@ -1,6 +1,11 @@
 #ifndef TUITENNIS
 #define TUITENNIS
 
+#include <ncurses.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/time.h>
+#include <unistd.h>
 #define DELAY_60FPS 16667 
 #define CEILING 3
 

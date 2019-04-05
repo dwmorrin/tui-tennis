@@ -1,10 +1,5 @@
 /* tennis game utilizing ncurses for a text based user interface */
 #include <time.h>
-#include <ncurses.h>
-#include <string.h>
-#include <unistd.h>
-#include <sys/time.h>
-#include <stdlib.h>
 #include "tuitennis.h"
 
 int main() {
