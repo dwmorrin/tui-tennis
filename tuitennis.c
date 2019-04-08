@@ -18,18 +18,18 @@ void initBall(struct Gamestate *g, int direction) {
     if (direction == 1) { /* player's serve */
         g->ball.x = 2;
     } else {
-        g->ball.x = g->cols - 3;
+        g->ball.x = COLS - 3;
     }
-    g->ball.y = g->lines / 2;
+    g->ball.y = LINES / 2;
     g->ball.speedY = 1;
     g->ball.speedX = 1 * direction;
 
     for (i = 0; i < 3; i++) {
         l = strlen(readysetgo[i]);
-        mvprintw(g->lines/2, g->cols/2 - l/2, "%s", readysetgo[i]);
+        mvprintw(LINES/2, COLS/2 - l/2, "%s", readysetgo[i]);
         refresh();
         sleep(1);
-        mvprintw(g->lines/2, g->cols/2 - l/2, "%s", "          ");
+        mvprintw(LINES/2, COLS/2 - l/2, "%s", "          ");
     } // TODO something better for blanking the line
 
     return;
