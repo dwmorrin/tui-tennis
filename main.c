@@ -11,15 +11,13 @@ int main() {
     noecho();                   /* do not echo characters to the screen */
     /* end curses initialization */
 
-    int ch = 0;
+    int cols, lines, ch = 0;
     struct Gamestate g;
     g.input = 0;
     g.speed = 4;
     g.frame = 0;
     g.newFrameFlag = 1;
     g.gameOver = 1;
-    g.lines = LINES;
-    g.cols = COLS;
 
     /* timer init */
     struct timeval t1, t0;
@@ -73,12 +71,20 @@ int main() {
 
         /* finally, check the time and paint if time is right
          * and put the new-frame-flag up and down to control 
-         * flag-based logic (prevent multiple calls)         */
+         * flag-based logic (prevent multiple calls)
+         * also check if COLS or LINES change and handle resize
+         */
         gettimeofday(&t1, NULL);
         if (getElapsed(t0, t1) > DELAY_60FPS) {
             g.frame++;
             g.newFrameFlag = 1;
+            cols = COLS;
+            lines = LINES;
             refresh();
+            if (COLS != cols || LINES != lines) {
+                // handle resize
+                break;
+            }
             gettimeofday(&t0, NULL);
         } else {
             g.newFrameFlag = 0;

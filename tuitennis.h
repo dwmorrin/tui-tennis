@@ -15,7 +15,7 @@ struct Gamepiece {
 };
 
 struct Gamestate {
-    int input, speed, frame, newFrameFlag, gameOver, lines, cols;
+    int input, speed, frame, newFrameFlag, gameOver;
     struct Gamepiece player, comp, ball;
 };
 
