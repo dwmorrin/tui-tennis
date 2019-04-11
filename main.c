@@ -93,7 +93,7 @@ int main() {
 
     /* exit routine */
     nodelay(stdscr, FALSE); /* allow getch to block */
-    mvprintw(LINES / 2, (COLS / 2) - 20, "DONE press any key");
+    mvprintw(LINES / 2, (COLS / 2) - strlen(EXIT_MESSAGE)/2, EXIT_MESSAGE);
     refresh();
     getch();
     endwin();
