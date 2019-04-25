@@ -121,28 +121,30 @@ void collisionCheck(struct Gamestate *g) {
         g->nextServe = -1;
         g->gameOver = 1;
     }
-    if (g->ball.x == 1) {
-       if (g->ball.y >= g->player.y && g->ball.y <= g->player.y + g->player.size) {
-          g->ball.speedX = -g->ball.speedX;
-          if (g->ball.y == g->player.y) {
-              g->ball.speedY = -2;
-          } else if (g->ball.y == g->player.y + 1) {
-              g->ball.speedY = -1;
-          } else if (g->ball.y == g->player.y + 2) {
-              g->ball.speedY = 0;
-          } else if (g->ball.y == g->player.y + 3) {
-              g->ball.speedY = 1;
-          } else if (g->ball.y == g->player.y + 4) {
-              g->ball.speedY = 2;
-          }
-       } 
+    if (g->ball.x == g->player.x + 1) {
+        collisionHandler(&g->player, &g->ball);
     }
-    if (g->ball.x == COLS - 2) {
-       if (g->ball.y >= g->comp.y && g->ball.y <= g->comp.y + g->comp.size) {
-          g->ball.speedX = -g->ball.speedX;
-       } 
+    if (g->ball.x == g->comp.x - 1) {
+        collisionHandler(&g->comp, &g->ball);
     }
     return;
+}
+void collisionHandler(struct Gamepiece *paddle, struct Gamepiece *ball) {
+   if (ball->y >= paddle->y &&
+       ball->y <= paddle->y + paddle->size) {
+      ball->speedX = -ball->speedX;
+      if (ball->y == paddle->y) {
+          ball->speedY = -2;
+      } else if (ball->y == paddle->y + 1) {
+          ball->speedY = -1;
+      } else if (ball->y == paddle->y + 2) {
+          ball->speedY = 0;
+      } else if (ball->y == paddle->y + 3) {
+          ball->speedY = 1;
+      } else if (ball->y == paddle->y + 4) {
+          ball->speedY = 2;
+      }
+   } 
 }
 
 void updatePaddles(struct Gamestate *g) {

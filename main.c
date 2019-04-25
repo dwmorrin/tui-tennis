@@ -29,12 +29,14 @@ int main() {
     struct Gamepiece player, comp, ball;
     player.x = 0;
     player.y = 5;
+    player.direction = 1;
     player.size = 5;
     player.angle = 0;
     player.power = 0;
     player.score = 0;
     comp.x = COLS - 1;
     comp.y = 5;
+    comp.direction = -1;
     comp.size = 5;
     comp.angle = 0;
     comp.power = 0;

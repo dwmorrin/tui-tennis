@@ -11,7 +11,7 @@
 #define EXIT_MESSAGE "DONE press any key"
 
 struct Gamepiece {
-    int x, y, size, moved, moveX, moveY,
+    int x, y, direction, size, moved, moveX, moveY,
         speedX, speedY, angle, power,
         score;
 };
@@ -22,6 +22,7 @@ struct Gamestate {
 };
 
 void collisionCheck(struct Gamestate *g);
+void collisionHandler(struct Gamepiece *paddle, struct Gamepiece *ball);
 long long getElapsed(struct timeval t0, struct timeval t1);
 void handleInput(struct Gamestate *g);
 void handleResize(struct Gamestate *g, int oldCols, int oldLines);
