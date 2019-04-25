@@ -27,6 +27,7 @@ void handleInput(struct Gamestate *g);
 void handleResize(struct Gamestate *g, int oldCols, int oldLines);
 void initBall(struct Gamestate *g);
 void paintPaddle(struct Gamepiece paddle);
+void score(struct Gamepiece *g);
 void updateBall(struct Gamestate *g);
 void updatePaddles(struct Gamestate *g);
 void updateSpeed(struct Gamestate *g);

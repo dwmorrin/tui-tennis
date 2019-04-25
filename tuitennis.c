@@ -98,18 +98,26 @@ void updateBall(struct Gamestate *g) {
     mvaddch(g->ball.y, g->ball.x, 'o');
     return;
 }
+
+void score(struct Gamepiece *g) {
+    int x = 1; // for player
+    if (g->x > 0) { // for comp
+        x = COLS - 3;
+    }
+    g->score++;
+    mvprintw(LINES - 1, x, "%d", g->score);
+}
+
 void collisionCheck(struct Gamestate *g) {
     if (g->ball.y <= CEILING + 1 || g->ball.y >= LINES - 3) {
         g->ball.speedY = -g->ball.speedY;
     }
     if (g->ball.x == 0) {
-        g->comp.score++;
-        mvprintw(LINES - 1, COLS - 3, "%d", g->comp.score);
+        score(&g->comp);
         g->nextServe = 1;
         g->gameOver = 1;
     } else if (g->ball.x == COLS) {
-        g->player.score++;
-        mvprintw(LINES - 1, 0, "%d", g->player.score);
+        score(&g->player);
         g->nextServe = -1;
         g->gameOver = 1;
     }
