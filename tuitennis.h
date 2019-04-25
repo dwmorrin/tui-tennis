@@ -15,12 +15,13 @@ struct Gamepiece {
 };
 
 struct Gamestate {
-    int input, speed, frame, newFrameFlag, gameOver, lines, cols;
+    int input, speed, frame, newFrameFlag, gameOver, nextServe;
     struct Gamepiece player, comp, ball;
 };
 
 long long getElapsed(struct timeval t0, struct timeval t1);
-void initBall(struct Gamestate *g, int direction);
+void handleResize(struct Gamestate *g, int oldCols, int oldLines);
+void initBall(struct Gamestate *g);
 void paintPaddle(struct Gamepiece paddle);
 void updateBall(struct Gamestate *g);
 void updatePaddles(struct Gamestate *g);
