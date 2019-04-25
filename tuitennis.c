@@ -3,7 +3,7 @@
 void handleResize(struct Gamestate *g, int oldCols, int oldLines) {
     // TODO need to blank and redraw screen, possibly refactor main.c
     // into an init function we can call here
-    initBall(g, -1);
+    initBall(g);
     return;
 }
 
@@ -11,17 +11,17 @@ long long getElapsed(struct timeval t0, struct timeval t1) {
     return (t1.tv_sec - t0.tv_sec) * 1e6 + (t1.tv_usec - t0.tv_usec);
 }
 
-void initBall(struct Gamestate *g, int direction) {
+void initBall(struct Gamestate *g) {
     char *readysetgo[] = {"READY", "SET", "GO"};
     int i, l;
-    if (direction == 1) { /* player's serve */
+    if (g->nextServe == 1) { /* player's serve */
         g->ball.x = 2;
     } else {
         g->ball.x = COLS - 3;
     }
     g->ball.y = LINES / 2;
     g->ball.speedY = 1;
-    g->ball.speedX = 1 * direction;
+    g->ball.speedX = 1 * g->nextServe;
     paintPaddle(g->player);
     paintPaddle(g->comp);
 
@@ -69,15 +69,15 @@ void updateBall(struct Gamestate *g) {
     if (g->ball.y <= CEILING + 1 || g->ball.y >= LINES - 3) {
         g->ball.speedY = -g->ball.speedY;
     }
-    if (g->ball.x == 0) { // || ball.x == COLS) {
+    if (g->ball.x == 0) {
         g->comp.score++;
         mvprintw(LINES - 1, COLS - 3, "%d", g->comp.score);
-        initBall(g, 1);
+        g->nextServe = 1;
         g->gameOver = 1;
     } else if (g->ball.x == COLS) {
         g->player.score++;
         mvprintw(LINES - 1, 0, "%d", g->player.score);
-        initBall(g, -1);
+        g->nextServe = -1;
         g->gameOver = 1;
     }
     if (g->ball.x == 1) {

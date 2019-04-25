@@ -18,6 +18,7 @@ int main() {
     g.frame = 0;
     g.newFrameFlag = 1;
     g.gameOver = 1;
+    g.nextServe = 1;
 
     /* timer init */
     struct timeval t1, t0;
@@ -52,13 +53,16 @@ int main() {
     /* seed rand for the comp player actions */
     srand(time(NULL));
 
-    initBall(&g, 1);
-
     /* MAIN LOOP */
     while(ch != 'q') {
         /* catch user input, this is non-blocking */
         if ((ch = getch()) != ERR) { /* ERR is the default */
             g.input = ch;
+        }
+
+        if (g.gameOver) {
+            g.gameOver = 0;
+            initBall(&g);
         }
 
         /* ball animation */
