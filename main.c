@@ -24,11 +24,11 @@ int main() {
     gettimeofday(&t0, NULL);
 
     /* paddles init */
-    struct Gamepiece paddle, comp, ball;
-    paddle.x = 0;
-    paddle.y = 5;
-    paddle.size = 5;
-    paddle.score = 0;
+    struct Gamepiece player, comp, ball;
+    player.x = 0;
+    player.y = 5;
+    player.size = 5;
+    player.score = 0;
     comp.x = COLS - 1;
     comp.y = 5;
     comp.size = 5;
@@ -41,7 +41,7 @@ int main() {
     ball.speedX = 1;
 
     g.ball = ball;
-    g.player = paddle;
+    g.player = player;
     g.comp = comp;
 
     /* print some static strings to the screen */
@@ -49,12 +49,10 @@ int main() {
     mvaddstr(1, 0, "Game Speed: ");
     mvhline(CEILING, 0, '_', COLS);
 
-    /* print the paddles */
-    paintPaddle(paddle);
-    paintPaddle(comp);
-
     /* seed rand for the comp player actions */
     srand(time(NULL));
+
+    initBall(&g, 1);
 
     /* MAIN LOOP */
     while(ch != 'q') {

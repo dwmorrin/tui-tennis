@@ -4,14 +4,6 @@ long long getElapsed(struct timeval t0, struct timeval t1) {
     return (t1.tv_sec - t0.tv_sec) * 1e6 + (t1.tv_usec - t0.tv_usec);
 }
 
-void paintPaddle(struct Gamepiece paddle) {
-    move(CEILING, paddle.x);
-    vline(' ', LINES - CEILING - 2);
-    move(paddle.y, paddle.x);
-    vline('|', paddle.size);
-    return;
-}
-
 void initBall(struct Gamestate *g, int direction) {
     char *readysetgo[] = {"READY", "SET", "GO"};
     int i, l;
@@ -23,6 +15,8 @@ void initBall(struct Gamestate *g, int direction) {
     g->ball.y = LINES / 2;
     g->ball.speedY = 1;
     g->ball.speedX = 1 * direction;
+    paintPaddle(g->player);
+    paintPaddle(g->comp);
 
     for (i = 0; i < 3; i++) {
         l = strlen(readysetgo[i]);
@@ -35,64 +29,74 @@ void initBall(struct Gamestate *g, int direction) {
     return;
 }
 
+void paintPaddle(struct Gamepiece paddle) {
+    move(CEILING, paddle.x);
+    vline(' ', LINES - CEILING - 2);
+    move(paddle.y, paddle.x);
+    vline('|', paddle.size);
+    return;
+}
+
 void updateBall(struct Gamestate *g) {
-    if (g->newFrameFlag && g->frame % g->speed == 0) {
-        if (g->input == 'k' && g->speed > 1) {
-            g->speed--;
-            g->input = ERR;
-        } else if (g->input == 'j' && g->speed < 10) {
-            g->speed++;
-            g->input = ERR;
-        }
-        /* delete the old ball */
-        if (g->ball.y == CEILING) {
-            mvaddch(g->ball.y, g->ball.x, '_');
-        } else {
-            mvaddch(g->ball.y, g->ball.x, ' ');
-        }
-        /* update ball */
-        g->ball.y += g->ball.speedY;
-        g->ball.x += g->ball.speedX;
-        /* check for collisions */
-        if (g->ball.y <= CEILING + 1 || g->ball.y >= LINES - 3) {
-            g->ball.speedY = -g->ball.speedY;
-        }
-        if (g->ball.x == 0) { // || ball.x == COLS) {
-            g->comp.score++;
-            mvprintw(LINES - 1, COLS - 3, "%d", g->comp.score);
-            initBall(g, 1);
-            g->gameOver = 1;
-        } else if (g->ball.x == COLS) {
-            g->player.score++;
-            mvprintw(LINES - 1, 0, "%d", g->player.score);
-            initBall(g, -1);
-            g->gameOver = 1;
-        }
-        if (g->ball.x == 1) {
-           if (g->ball.y >= g->player.y && g->ball.y <= g->player.y + g->player.size) {
-              g->ball.speedX = -g->ball.speedX;
-              if (g->ball.y == g->player.y) {
-                  g->ball.speedY = -2;
-              } else if (g->ball.y == g->player.y + 1) {
-                  g->ball.speedY = -1;
-              } else if (g->ball.y == g->player.y + 2) {
-                  g->ball.speedY = 0;
-              } else if (g->ball.y == g->player.y + 3) {
-                  g->ball.speedY = 1;
-              } else if (g->ball.y == g->player.y + 4) {
-                  g->ball.speedY = 2;
-              }
-           } 
-        }
-        if (g->ball.x == COLS - 2) {
-           if (g->ball.y >= g->comp.y && g->ball.y <= g->comp.y + g->comp.size) {
-              g->ball.speedX = -g->ball.speedX;
-           } 
-        }
-        mvaddch(g->ball.y, g->ball.x, 'o');
-        /* update current speed */
-        mvprintw(1, 13, "%d  (slower: j, faster: k)", 11 - g->speed);
+    if (! g->newFrameFlag ||
+          g->frame % g->speed != 0) {
+        return;
     }
+    if (g->input == 'k' && g->speed > 1) {
+        g->speed--;
+        g->input = ERR;
+    } else if (g->input == 'j' && g->speed < 10) {
+        g->speed++;
+        g->input = ERR;
+    }
+    /* delete the old ball */
+    if (g->ball.y == CEILING) {
+        mvaddch(g->ball.y, g->ball.x, '_');
+    } else {
+        mvaddch(g->ball.y, g->ball.x, ' ');
+    }
+    /* update ball */
+    g->ball.y += g->ball.speedY;
+    g->ball.x += g->ball.speedX;
+    /* check for collisions */
+    if (g->ball.y <= CEILING + 1 || g->ball.y >= LINES - 3) {
+        g->ball.speedY = -g->ball.speedY;
+    }
+    if (g->ball.x == 0) { // || ball.x == COLS) {
+        g->comp.score++;
+        mvprintw(LINES - 1, COLS - 3, "%d", g->comp.score);
+        initBall(g, 1);
+        g->gameOver = 1;
+    } else if (g->ball.x == COLS) {
+        g->player.score++;
+        mvprintw(LINES - 1, 0, "%d", g->player.score);
+        initBall(g, -1);
+        g->gameOver = 1;
+    }
+    if (g->ball.x == 1) {
+       if (g->ball.y >= g->player.y && g->ball.y <= g->player.y + g->player.size) {
+          g->ball.speedX = -g->ball.speedX;
+          if (g->ball.y == g->player.y) {
+              g->ball.speedY = -2;
+          } else if (g->ball.y == g->player.y + 1) {
+              g->ball.speedY = -1;
+          } else if (g->ball.y == g->player.y + 2) {
+              g->ball.speedY = 0;
+          } else if (g->ball.y == g->player.y + 3) {
+              g->ball.speedY = 1;
+          } else if (g->ball.y == g->player.y + 4) {
+              g->ball.speedY = 2;
+          }
+       } 
+    }
+    if (g->ball.x == COLS - 2) {
+       if (g->ball.y >= g->comp.y && g->ball.y <= g->comp.y + g->comp.size) {
+          g->ball.speedX = -g->ball.speedX;
+       } 
+    }
+    mvaddch(g->ball.y, g->ball.x, 'o');
+    /* update current speed */
+    mvprintw(1, 13, "%d  (slower: j, faster: k)", 11 - g->speed);
     return;
 }
 
