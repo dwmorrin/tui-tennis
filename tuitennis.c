@@ -44,17 +44,22 @@ void paintPaddle(struct Gamepiece paddle) {
     return;
 }
 
-void updateBall(struct Gamestate *g) {
-    if (! g->newFrameFlag ||
-          g->frame % g->speed != 0) {
-        return;
-    }
+void updateSpeed(struct Gamestate *g) {
     if (g->input == 'k' && g->speed > 1) {
         g->speed--;
         g->input = ERR;
     } else if (g->input == 'j' && g->speed < 10) {
         g->speed++;
         g->input = ERR;
+    }
+    mvprintw(1, 13, "%d  (slower: j, faster: k)", 11 - g->speed);
+    return;
+}
+
+void updateBall(struct Gamestate *g) {
+    if (! g->newFrameFlag ||
+          g->frame % g->speed != 0) {
+        return;
     }
     /* delete the old ball */
     if (g->ball.y == CEILING) {
@@ -102,8 +107,6 @@ void updateBall(struct Gamestate *g) {
        } 
     }
     mvaddch(g->ball.y, g->ball.x, 'o');
-    /* update current speed */
-    mvprintw(1, 13, "%d  (slower: j, faster: k)", 11 - g->speed);
     return;
 }
 

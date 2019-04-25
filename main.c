@@ -29,10 +29,14 @@ int main() {
     player.x = 0;
     player.y = 5;
     player.size = 5;
+    player.angle = 0;
+    player.power = 0;
     player.score = 0;
     comp.x = COLS - 1;
     comp.y = 5;
     comp.size = 5;
+    comp.angle = 0;
+    comp.power = 0;
     comp.score = 0;
 
     ball.x = 1;
@@ -64,18 +68,10 @@ int main() {
             g.gameOver = 0;
             initBall(&g);
         }
-
-        /* ball animation */
+        updateSpeed(&g);
         updateBall(&g);
-
-        /* paddle animation */
         updatePaddles(&g);
 
-        /* finally, check the time and paint if time is right
-         * and put the new-frame-flag up and down to control 
-         * flag-based logic (prevent multiple calls)
-         * also check if COLS or LINES change and handle resize
-         */
         gettimeofday(&t1, NULL);
         if (getElapsed(t0, t1) > DELAY_60FPS) {
             g.frame++;

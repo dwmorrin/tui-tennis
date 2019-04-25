@@ -11,7 +11,7 @@
 #define EXIT_MESSAGE "DONE press any key"
 
 struct Gamepiece {
-    int x, y, size, moved, speedX, speedY, score;
+    int x, y, size, moved, speedX, speedY, angle, power, score;
 };
 
 struct Gamestate {
@@ -25,5 +25,6 @@ void initBall(struct Gamestate *g);
 void paintPaddle(struct Gamepiece paddle);
 void updateBall(struct Gamestate *g);
 void updatePaddles(struct Gamestate *g);
+void updateSpeed(struct Gamestate *g);
 
 #endif
