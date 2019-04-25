@@ -20,6 +20,7 @@ struct Gamestate {
 };
 
 long long getElapsed(struct timeval t0, struct timeval t1);
+void handleResize(struct Gamestate *g, int oldCols, int oldLines);
 void initBall(struct Gamestate *g, int direction);
 void paintPaddle(struct Gamepiece paddle);
 void updateBall(struct Gamestate *g);

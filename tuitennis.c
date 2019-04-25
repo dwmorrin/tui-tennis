@@ -1,5 +1,12 @@
 #include "tuitennis.h"
 
+void handleResize(struct Gamestate *g, int oldCols, int oldLines) {
+    // TODO need to blank and redraw screen, possibly refactor main.c
+    // into an init function we can call here
+    initBall(g, -1);
+    return;
+}
+
 long long getElapsed(struct timeval t0, struct timeval t1) {
     return (t1.tv_sec - t0.tv_sec) * 1e6 + (t1.tv_usec - t0.tv_usec);
 }

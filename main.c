@@ -80,8 +80,8 @@ int main() {
             lines = LINES;
             refresh();
             if (COLS != cols || LINES != lines) {
-                // handle resize
-                break;
+                sleep(2); // wait for resize to end
+                handleResize(&g, cols, lines);
             }
             gettimeofday(&t0, NULL);
         } else {
