@@ -19,6 +19,7 @@ int main() {
     g.newFrameFlag = 1;
     g.gameOver = 1;
     g.nextServe = 1;
+    g.run = 1;
 
     /* timer init */
     struct timeval t1, t0;
@@ -58,17 +59,18 @@ int main() {
     srand(time(NULL));
 
     /* MAIN LOOP */
-    while(ch != 'q') {
+    while (g.run) {
         /* catch user input, this is non-blocking */
         if ((ch = getch()) != ERR) { /* ERR is the default */
             g.input = ch;
+            handleInput(&g);
+            ch = ERR;
         }
 
         if (g.gameOver) {
             g.gameOver = 0;
             initBall(&g);
         }
-        updateSpeed(&g);
         updateBall(&g);
         updatePaddles(&g);
 

@@ -1,5 +1,30 @@
 #include "tuitennis.h"
 
+void handleInput(struct Gamestate *g) {
+    switch (g->input) {
+        case 'w':
+            g->player.moveY = 1;
+            break;
+        case 's':
+            g->player.moveY = -1;
+            break;
+        case 'a':
+            g->player.moveX = 1;
+            break;
+        case 'd':
+            g->player.moveX = -1;
+            break;
+        case 'j':
+        case 'k':
+            updateSpeed(g);
+            break;
+        case 'q':
+            g->run = 0;
+            break;
+    }
+    g->input = ERR;
+}
+
 void handleResize(struct Gamestate *g, int oldCols, int oldLines) {
     // TODO need to blank and redraw screen, possibly refactor main.c
     // into an init function we can call here
@@ -24,6 +49,7 @@ void initBall(struct Gamestate *g) {
     g->ball.speedX = 1 * g->nextServe;
     paintPaddle(g->player);
     paintPaddle(g->comp);
+    updateSpeed(g);
 
     for (i = 0; i < 3; i++) {
         l = strlen(readysetgo[i]);
@@ -47,10 +73,8 @@ void paintPaddle(struct Gamepiece paddle) {
 void updateSpeed(struct Gamestate *g) {
     if (g->input == 'k' && g->speed > 1) {
         g->speed--;
-        g->input = ERR;
     } else if (g->input == 'j' && g->speed < 10) {
         g->speed++;
-        g->input = ERR;
     }
     mvprintw(1, 13, "%d  (slower: j, faster: k)", 11 - g->speed);
     return;
@@ -70,7 +94,11 @@ void updateBall(struct Gamestate *g) {
     /* update ball */
     g->ball.y += g->ball.speedY;
     g->ball.x += g->ball.speedX;
-    /* check for collisions */
+    collisionCheck(g);
+    mvaddch(g->ball.y, g->ball.x, 'o');
+    return;
+}
+void collisionCheck(struct Gamestate *g) {
     if (g->ball.y <= CEILING + 1 || g->ball.y >= LINES - 3) {
         g->ball.speedY = -g->ball.speedY;
     }
@@ -106,19 +134,18 @@ void updateBall(struct Gamestate *g) {
           g->ball.speedX = -g->ball.speedX;
        } 
     }
-    mvaddch(g->ball.y, g->ball.x, 'o');
     return;
 }
 
 void updatePaddles(struct Gamestate *g) {
-    if (g->input == 'w' && g->player.y > CEILING + 1) {
-        g->input = ERR;
+    if (g->player.moveY == 1 && g->player.y > CEILING + 1) {
         g->player.y -= 2;
         g->player.moved = 1;
-    } else if (g->input == 's' && g->player.y < LINES - 3 - g->player.size) {
-        g->input = ERR;
+        g->player.moveY = 0;
+    } else if (g->player.moveY == -1 && g->player.y < LINES - 3 - g->player.size) {
         g->player.y += 2;
         g->player.moved = 1;
+        g->player.moveY = 0;
     }
     /* current method: randomly decide if comp player moves to align itself with the ball 
      * problem: somewhat jerky motion, and the 'following' pattern is unnatural

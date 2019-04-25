@@ -11,15 +11,19 @@
 #define EXIT_MESSAGE "DONE press any key"
 
 struct Gamepiece {
-    int x, y, size, moved, speedX, speedY, angle, power, score;
+    int x, y, size, moved, moveX, moveY,
+        speedX, speedY, angle, power,
+        score;
 };
 
 struct Gamestate {
-    int input, speed, frame, newFrameFlag, gameOver, nextServe;
+    int input, speed, frame, newFrameFlag, gameOver, nextServe, run;
     struct Gamepiece player, comp, ball;
 };
 
+void collisionCheck(struct Gamestate *g);
 long long getElapsed(struct timeval t0, struct timeval t1);
+void handleInput(struct Gamestate *g);
 void handleResize(struct Gamestate *g, int oldCols, int oldLines);
 void initBall(struct Gamestate *g);
 void paintPaddle(struct Gamepiece paddle);
