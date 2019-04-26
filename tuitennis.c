@@ -163,23 +163,28 @@ void updatePaddles(struct Gamestate *g) {
      * ball is going to hit, and randomly offset the calculation so sometimes the 
      * comp is perfect, other times the comp guess wrong, either way the comp can move
      * gracefully to a certain position */
-    if (g->newFrameFlag && rand() % 100 > 95 - ((g->ball.x / 4) * g->ball.speedX)) {
+    if (g->newFrameFlag &&
+        rand() % 100 > 95 - ((g->ball.x / 4) * g->ball.speedX)) {
         /*track ball */
-        if (g->ball.y > g->comp.y + 2 && g->comp.y < LINES - 3 - g->comp.size) {
+        if (g->ball.y > g->comp.y + 2 &&
+            g->comp.y < LINES - 3 - g->comp.size) {
             g->comp.y++;
             g->comp.moved = 1;
-        } else if (g->ball.y < g->comp.y + 2 && g->comp.y > CEILING + 1) {
+        } else if (g->ball.y < g->comp.y + 2 &&
+                   g->comp.y > CEILING + 1) {
             g->comp.y--;
             g->comp.moved = 1;
         }
     }
-    if (g->player.moved) {
-        g->player.moved = 0;
-        paintPaddle(g->player);
-    }
-    if (g->comp.moved) {
-        g->comp.moved = 0;
-        paintPaddle(g->comp);
+    moveCheck(&g->player);
+    moveCheck(&g->comp);
+    return;
+}
+
+void moveCheck(struct Gamepiece *g) {
+    if (g->moved) {
+        g->moved = 0;
+        paintPaddle(*g);
     }
     return;
 }
