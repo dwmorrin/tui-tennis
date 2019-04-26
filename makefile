@@ -1,4 +1,4 @@
 all: *.c
-	gcc -o tuitennis *.c -lncurses
+	gcc -Wall -o tuitennis *.c -lncurses
 clean:
 	rm tuitennis

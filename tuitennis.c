@@ -110,9 +110,10 @@ void initGame(struct Gamestate *g) {
     return;
 }
 
-void initPaddle(struct Gamepiece *paddle) {
-    paddle->size = 5;
-    paddle->y = LINES / 2 - paddle->size / 2;
+void initPaddle(struct Gamepiece *p) {
+    p->x = p->score = p->direction = p->moved = p->moveX = p->moveY = 0;
+    p->size = 5;
+    p->y = LINES / 2 - p->size / 2;
     return;
 }
 
