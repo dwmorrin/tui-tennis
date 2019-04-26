@@ -9,6 +9,7 @@
 #include <unistd.h>
 #define DELAY_60FPS 16667 
 #define CEILING 3
+#define DEFAULT_BALL_SPEED 4
 #define BANNER_STRING "TEXT USER INTERFACE TENNIS | up: w, down: s, quit: q"
 #define EXIT_MESSAGE "DONE press any key"
 
@@ -18,8 +19,13 @@ struct Gamepiece {
         score;
 };
 
+/**
+ * interpolateTry is a flag when the speed of the ball is >1 and we need to check
+ *   if the paddle can intercept it or not.  We need to try the interpolation only
+ *   once or else the ball gets stuck.
+ */
 struct Gamestate {
-    int input, speed, frame, newFrameFlag, gameOver, nextServe, run;
+    int input, speed, frame, newFrameFlag, gameOver, nextServe, run, interpolateTry;
     struct Gamepiece player, comp, ball;
     struct timeval t0, t1;
 };

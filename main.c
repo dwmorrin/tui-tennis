@@ -16,6 +16,7 @@ int main() {
     g.gameOver = 1;
     g.nextServe = 1;
     g.run = 1;
+    g.interpolateTry = 0;
 
     /* timer init */
     gettimeofday(&g.t0, NULL);

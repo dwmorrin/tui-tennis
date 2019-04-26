@@ -4,11 +4,11 @@ void collisionCheck(struct Gamestate *g) {
     if (g->ball.y <= CEILING + 1 || g->ball.y >= LINES - 3) {
         g->ball.speedY = -g->ball.speedY;
     }
-    if (g->ball.x == 0) {
+    if (g->ball.x <= 0) {
         score(&g->comp);
         g->nextServe = 1;
         g->gameOver = 1;
-    } else if (g->ball.x == COLS) {
+    } else if (g->ball.x >= COLS) {
         score(&g->player);
         g->nextServe = -1;
         g->gameOver = 1;
@@ -22,6 +22,10 @@ void collisionCheck(struct Gamestate *g) {
     return;
 }
 
+/**
+ * collisionHandler tests for collision between paddle and ball
+ *   and determines resulting speed for ball
+ */
 void collisionHandler(struct Gamepiece *paddle, struct Gamepiece *ball) {
    if (ball->y >= paddle->y &&
        ball->y <= paddle->y + paddle->size) {
@@ -81,7 +85,7 @@ void initBall(struct Gamepiece *b) {
     b->y = LINES / 2;
     b->size = 1;
     b->speedY = 1;
-    b->speedX = 1;
+    b->speedX = DEFAULT_BALL_SPEED;
 }
 
 void initGame(struct Gamestate *g) {
@@ -94,7 +98,7 @@ void initGame(struct Gamestate *g) {
     }
     g->ball.y = LINES / 2;
     g->ball.speedY = 1;
-    g->ball.speedX = 1 * g->nextServe;
+    g->ball.speedX = DEFAULT_BALL_SPEED * g->nextServe;
     paintPaddle(g->player);
     paintPaddle(g->comp);
     updateSpeed(g);
@@ -143,6 +147,7 @@ void score(struct Gamepiece *g) {
 }
 
 void updateBall(struct Gamestate *g) {
+    int lookAheadX;
     if (! g->newFrameFlag ||
           g->frame % g->speed != 0) {
         return;
@@ -154,8 +159,20 @@ void updateBall(struct Gamestate *g) {
         mvaddch(g->ball.y, g->ball.x, ' ');
     }
     /* update ball */
+    lookAheadX = g->ball.x + g->ball.speedX;
+    if (lookAheadX <= g->player.x + 1 &&
+        ! g->interpolateTry) {
+        g->interpolateTry = 1;
+        g->ball.x = g->player.x + 1;
+    } else if (lookAheadX >= g->comp.x - 1 &&
+        ! g->interpolateTry) {
+        g->interpolateTry = 1;
+        g->ball.x = g->comp.x - 1;
+    } else {
+        g->interpolateTry = 0;
+        g->ball.x += g->ball.speedX;
+    }
     g->ball.y += g->ball.speedY;
-    g->ball.x += g->ball.speedX;
     collisionCheck(g);
     mvaddch(g->ball.y, g->ball.x, 'o');
     return;
