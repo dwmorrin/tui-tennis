@@ -10,7 +10,6 @@ int main() {
     noecho();                   /* do not echo characters to the screen */
     /* end curses initialization */
 
-    int ch;
     struct Gamestate g;
     g.speed = 4;
     g.newFrameFlag = 1;
@@ -46,10 +45,8 @@ int main() {
     /* MAIN LOOP */
     while (g.run) {
         /* catch user input, this is non-blocking */
-        if ((ch = getch()) != ERR) { /* ERR is the default */
-            g.input = ch;
+        if ((g.input = getch()) != ERR) { /* ERR is the default */
             handleInput(&g);
-            ch = ERR;
         }
 
         if (g.gameOver) {
