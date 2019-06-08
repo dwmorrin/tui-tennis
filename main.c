@@ -10,31 +10,7 @@ int main() {
     noecho();                   /* do not echo characters to the screen */
     /* end curses initialization */
 
-    struct Gamestate g = {
-        .speed = 4,
-        .newFrameFlag = 1,
-        .gameOver = 1,
-        .nextServe = 1,
-        .run = 1,
-        .interpolateTry = 0
-    };
-
-    /* timer init */
-    gettimeofday(&g.t0, NULL);
-
-    /* paddles init */
-    struct Gamepiece player, comp, ball;
-    initPaddle(&player);
-    initPaddle(&comp);
-    player.direction = 1;
-    comp.x = COLS - 1;
-    comp.direction = -1;
-
-    initBall(&ball);
-
-    g.ball = ball;
-    g.player = player;
-    g.comp = comp;
+    GamestateInit(&gamestate);
 
     /* print some static strings to the screen */
     mvaddstr(0, 0, BANNER_STRING);
@@ -45,19 +21,19 @@ int main() {
     srand(time(NULL));
 
     /* MAIN LOOP */
-    while (g.run) {
+    while (gamestate.run) {
         /* catch user input, this is non-blocking */
-        if ((g.input = getch()) != ERR) { /* ERR is the default */
-            handleInput(&g);
+        if ((gamestate.input = getch()) != ERR) { /* ERR is the default */
+            handleInput(&gamestate);
         }
 
-        if (g.gameOver) {
-            g.gameOver = 0;
-            initGame(&g);
+        if (gamestate.gameOver) {
+            gamestate.gameOver = 0;
+            initGame(&gamestate);
         }
-        updateBall(&g);
-        updatePaddles(&g);
-        updateTime(&g);
+        updateBall(&gamestate);
+        updatePaddles(&gamestate);
+        updateTime(&gamestate);
     }
 
     /* exit routine */

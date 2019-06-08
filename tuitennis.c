@@ -49,6 +49,25 @@ void collisionHandler(struct Gamepiece *paddle, struct Gamepiece *ball) {
    } 
 }
 
+void GamestateInit(struct Gamestate *gamestate) {
+    gamestate->speed = 4;
+    gamestate->newFrameFlag = 1;
+    gamestate->gameOver = 1;
+    gamestate->nextServe = 1;
+    gamestate->run = 1;
+    gamestate->interpolateTry = 0;
+    initPaddle(&player);
+    initPaddle(&comp);
+    player.direction = 1;
+    comp.x = COLS - 1;
+    comp.direction = -1;
+    initBall(&ball);
+    gamestate->ball = ball;
+    gamestate->player = player;
+    gamestate->comp = comp;
+    gettimeofday(&gamestate->t0, NULL);
+}
+
 long long getElapsed(struct timeval t0, struct timeval t1) {
     return (t1.tv_sec - t0.tv_sec) * 1e6 + (t1.tv_usec - t0.tv_usec);
 }

@@ -17,7 +17,7 @@ struct Gamepiece {
     int x, y, direction, size, moved, moveX, moveY,
         speedX, speedY, angle, power,
         score;
-};
+} player, comp, ball;
 
 /**
  * interpolateTry is a flag when the speed of the ball is >1 and we need to check
@@ -28,10 +28,11 @@ struct Gamestate {
     int input, speed, frame, newFrameFlag, gameOver, nextServe, run, interpolateTry;
     struct Gamepiece player, comp, ball;
     struct timeval t0, t1;
-};
+} gamestate;
 
 void collisionCheck(struct Gamestate *g);
 void collisionHandler(struct Gamepiece *paddle, struct Gamepiece *ball);
+void GamestateInit(struct Gamestate*);
 long long getElapsed(struct timeval t0, struct timeval t1);
 void handleInput(struct Gamestate *g);
 void handleResize(struct Gamestate *g, int oldCols, int oldLines);
