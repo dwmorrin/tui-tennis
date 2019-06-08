@@ -1,7 +1,12 @@
 #include "tuitennis.h"
 
 void collisionCheck(struct Gamestate *g) {
-    if (g->ball.y <= CEILING + 1 || g->ball.y >= LINES - 3) {
+    if (g->ball.y <= CEILING + 1) {// || {
+        g->ball.y = CEILING + 1;
+        g->ball.speedY = -g->ball.speedY;
+    }
+    if (g->ball.y >= LINES - 3) {
+        g->ball.y = LINES - 3;
         g->ball.speedY = -g->ball.speedY;
     }
     if (g->ball.x <= 0) {
