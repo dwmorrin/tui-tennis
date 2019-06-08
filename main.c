@@ -29,7 +29,7 @@ int main() {
 
         if (gamestate.gameOver) {
             gamestate.gameOver = false;
-            initGame(&gamestate);
+            GameReset(&gamestate);
         }
         updateBall(&gamestate);
         updatePaddles(&gamestate);

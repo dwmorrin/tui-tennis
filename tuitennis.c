@@ -10,11 +10,11 @@ void collisionCheck(struct Gamestate *g) {
         g->ball.speedY = -g->ball.speedY;
     }
     if (g->ball.x <= 0) {
-        score(&g->comp);
+        PaddleScore(&g->comp);
         g->nextServe = 1;
         g->gameOver = true;
     } else if (g->ball.x >= COLS) {
-        score(&g->player);
+        PaddleScore(&g->player);
         g->nextServe = -1;
         g->gameOver = true;
     }
@@ -56,12 +56,12 @@ void GamestateInit(struct Gamestate *gamestate) {
     gamestate->nextServe = 1;
     gamestate->run = true;
     gamestate->interpolateTry = false;
-    initPaddle(&player);
-    initPaddle(&comp);
+    PaddleInit(&player);
+    PaddleInit(&comp);
     player.direction = 1;
     comp.x = COLS - 1;
     comp.direction = -1;
-    initBall(&ball);
+    BallInit(&ball);
     gamestate->ball = ball;
     gamestate->player = player;
     gamestate->comp = comp;
@@ -100,19 +100,19 @@ void handleInput(struct Gamestate *g) {
 void handleResize(struct Gamestate *g, int oldCols, int oldLines) {
     // TODO need to blank and redraw screen, possibly refactor main.c
     // into an init function we can call here
-    initGame(g);
+    GameReset(g);
     return;
 }
 
-void initBall(struct Gamepiece *b) {
-    b->x = 1;
-    b->y = LINES / 2;
-    b->size = 1;
-    b->speedY = 1;
-    b->speedX = DEFAULT_BALL_SPEED;
+void BallInit(struct Gamepiece *ball) {
+    ball->x = 1;
+    ball->y = LINES / 2;
+    ball->size = 1;
+    ball->speedY = 1;
+    ball->speedX = DEFAULT_BALL_SPEED;
 }
 
-void initGame(struct Gamestate *g) {
+void GameReset(struct Gamestate *g) {
     char *readysetgo[] = {"READY", "SET", "GO"};
     int i, l;
     if (g->nextServe == 1) { /* player's serve */
@@ -123,8 +123,8 @@ void initGame(struct Gamestate *g) {
     g->ball.y = LINES / 2;
     g->ball.speedY = 1;
     g->ball.speedX = DEFAULT_BALL_SPEED * g->nextServe;
-    paintPaddle(g->player);
-    paintPaddle(g->comp);
+    PaddlePaint(g->player);
+    PaddlePaint(g->comp);
     updateSpeed(g);
 
     for (i = 0; i < 3; i++) {
@@ -138,7 +138,7 @@ void initGame(struct Gamestate *g) {
     return;
 }
 
-void initPaddle(struct Gamepiece *p) {
+void PaddleInit(struct Gamepiece *p) {
     p->x = p->score = p->direction = p->moveX = p->moveY = 0;
     p->moved = false;
     p->size = 5;
@@ -146,15 +146,15 @@ void initPaddle(struct Gamepiece *p) {
     return;
 }
 
-void moveCheck(struct Gamepiece *g) {
-    if (g->moved) {
-        g->moved = false;
-        paintPaddle(*g);
+void PaddleMoveCheck(struct Gamepiece *paddle) {
+    if (paddle->moved) {
+        paddle->moved = false;
+        PaddlePaint(*paddle);
     }
     return;
 }
 
-void paintPaddle(struct Gamepiece paddle) {
+void PaddlePaint(struct Gamepiece paddle) {
     move(CEILING, paddle.x);
     vline(' ', LINES - CEILING - 2);
     move(paddle.y, paddle.x);
@@ -162,13 +162,13 @@ void paintPaddle(struct Gamepiece paddle) {
     return;
 }
 
-void score(struct Gamepiece *g) {
+void PaddleScore(struct Gamepiece *paddle) {
     int x = 1; // for player
-    if (g->x > 0) { // for comp
+    if (paddle->x > 0) { // for comp
         x = COLS - 3;
     }
-    g->score++;
-    mvprintw(LINES - 1, x, "%d", g->score);
+    paddle->score++;
+    mvprintw(LINES - 1, x, "%d", paddle->score);
 }
 
 void updateBall(struct Gamestate *g) {
@@ -232,8 +232,8 @@ void updatePaddles(struct Gamestate *g) {
             g->comp.moved = true;
         }
     }
-    moveCheck(&g->player);
-    moveCheck(&g->comp);
+    PaddleMoveCheck(&g->player);
+    PaddleMoveCheck(&g->comp);
     return;
 }
 

@@ -33,18 +33,18 @@ struct Gamestate {
     struct timeval t0, t1;
 } gamestate;
 
+void BallInit(struct Gamepiece*);
 void collisionCheck(struct Gamestate *g);
 void collisionHandler(struct Gamepiece *paddle, struct Gamepiece *ball);
-void GamestateInit(struct Gamestate*);
 long long getElapsed(struct timeval t0, struct timeval t1);
+void GameReset(struct Gamestate*);
+void GamestateInit(struct Gamestate*);
 void handleInput(struct Gamestate *g);
 void handleResize(struct Gamestate *g, int oldCols, int oldLines);
-void initBall(struct Gamepiece *b);
-void initGame(struct Gamestate *g);
-void initPaddle(struct Gamepiece *p);
-void moveCheck(struct Gamepiece *g);
-void paintPaddle(struct Gamepiece paddle);
-void score(struct Gamepiece *g);
+void PaddleInit(struct Gamepiece*);
+void PaddleMoveCheck(struct Gamepiece*);
+void PaddlePaint(struct Gamepiece);
+void PaddleScore(struct Gamepiece*);
 void updateBall(struct Gamestate *g);
 void updatePaddles(struct Gamestate *g);
 void updateSpeed(struct Gamestate *g);
