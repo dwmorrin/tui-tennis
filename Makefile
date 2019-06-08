@@ -1,9 +1,24 @@
-objs = main.o tuitennis.o
-tuitennis: $(objs)
-	gcc -Wall -o tuitennis $(objs) -lncurses
-main.o: main.c tuitennis.h
-	gcc -Wall -c main.c
-tuitennis.o: tuitennis.c tuitennis.h
-	gcc -Wall -c tuitennis.c
+exe = tuitennis
+
+srcDir = src
+objDir = obj
+
+src = $(wildcard $(srcDir)/*.c)
+objs = $(src:$(srcDir)/%.c=$(objDir)/%.o)
+
+CPPFLAGS += -Iinclude
+CFLAGS += -Wall
+LDLIBS += -lncurses
+
+.PHONY: all clean
+
+all: $(exe)
+
+$(exe): $(objs)
+	$(CC) $(LDFLAGS) $^ $(LDLIBS) -o $@
+
+$(objDir)/%.o: $(srcDir)/%.c
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
+
 clean:
-	rm tuitennis $(objs)
+	$(RM) $(objs) $(exe)
