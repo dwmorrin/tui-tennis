@@ -21,11 +21,6 @@ struct Gamepiece {
         score;
 } player, comp, ball;
 
-/**
- * interpolateTry is a flag when the speed of the ball is >1 and we need to check
- *   if the paddle can intercept it or not.  We need to try the interpolation only
- *   once or else the ball gets stuck.
- */
 struct Gamestate {
     int input, speed, frame, nextServe;
     bool newFrameFlag, gameOver, run, interpolateTry;
@@ -34,22 +29,22 @@ struct Gamestate {
 } gamestate;
 
 void BallInit(struct Gamepiece*);
-void collisionCheck(struct Gamestate *g);
+void collisionCheck(struct Gamestate*);
 void collisionHandler(struct Gamepiece *paddle, struct Gamepiece *ball);
 long long getElapsed(struct timeval t0, struct timeval t1);
 void GamestateInit(struct Gamestate*);
 void GamestateReset(struct Gamestate*);
-void handleInput(struct Gamestate *g);
-void handleResize(struct Gamestate *g, int oldCols, int oldLines);
+void handleInput(struct Gamestate*);
+void handleResize(struct Gamestate*, int oldCols, int oldLines);
 void NcursesInit(void);
 void NcursesExit(void);
 void PaddleInit(struct Gamepiece*);
 void PaddleMoveCheck(struct Gamepiece*);
 void PaddlePaint(struct Gamepiece);
 void PaddleScore(struct Gamepiece*);
-void updateBall(struct Gamestate *g);
-void updatePaddles(struct Gamestate *g);
-void updateSpeed(struct Gamestate *g);
-void updateTime(struct Gamestate *g);
+void updateBall(struct Gamestate*);
+void updatePaddles(struct Gamestate*);
+void updateSpeed(struct Gamestate*);
+void updateTime(struct Gamestate*);
 
 #endif
