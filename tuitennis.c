@@ -118,6 +118,15 @@ void NcursesInit(void) {
     mvhline(CEILING, 0, '_', COLS);
 }
 
+void NcursesExit(void) {
+    nodelay(stdscr, FALSE); /* allow getch to block */
+    mvprintw(LINES / 2, (COLS / 2) - strlen(EXIT_MESSAGE)/2, EXIT_MESSAGE);
+    refresh();
+    getch();
+    endwin();
+    exit(EXIT_SUCCESS);
+}
+
 void BallInit(struct Gamepiece *ball) {
     ball->x = 1;
     ball->y = LINES / 2;
