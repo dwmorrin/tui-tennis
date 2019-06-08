@@ -37,6 +37,8 @@ void handleInput(struct Gamestate*);
 void handleResize(struct Gamestate*, int oldCols, int oldLines);
 void NcursesInit(void);
 void NcursesExit(void);
+void PaddleAiMove(struct Gamestate*);
+void PaddleBoundsCheck(struct Gamestate*);
 void PaddleCollisionHandler(struct Gamepiece *paddle, struct Gamepiece *ball);
 void PaddleInit(struct Gamepiece*);
 void PaddleMoveCheck(struct Gamepiece*);
