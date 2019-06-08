@@ -12,11 +12,11 @@ void collisionCheck(struct Gamestate *g) {
     if (g->ball.x <= 0) {
         score(&g->comp);
         g->nextServe = 1;
-        g->gameOver = 1;
+        g->gameOver = true;
     } else if (g->ball.x >= COLS) {
         score(&g->player);
         g->nextServe = -1;
-        g->gameOver = 1;
+        g->gameOver = true;
     }
     if (g->ball.x == g->player.x + 1) {
         collisionHandler(&g->player, &g->ball);
@@ -51,11 +51,11 @@ void collisionHandler(struct Gamepiece *paddle, struct Gamepiece *ball) {
 
 void GamestateInit(struct Gamestate *gamestate) {
     gamestate->speed = 4;
-    gamestate->newFrameFlag = 1;
-    gamestate->gameOver = 1;
+    gamestate->newFrameFlag = true;
+    gamestate->gameOver = true;
     gamestate->nextServe = 1;
-    gamestate->run = 1;
-    gamestate->interpolateTry = 0;
+    gamestate->run = true;
+    gamestate->interpolateTry = false;
     initPaddle(&player);
     initPaddle(&comp);
     player.direction = 1;
@@ -139,7 +139,8 @@ void initGame(struct Gamestate *g) {
 }
 
 void initPaddle(struct Gamepiece *p) {
-    p->x = p->score = p->direction = p->moved = p->moveX = p->moveY = 0;
+    p->x = p->score = p->direction = p->moveX = p->moveY = 0;
+    p->moved = false;
     p->size = 5;
     p->y = LINES / 2 - p->size / 2;
     return;
@@ -147,7 +148,7 @@ void initPaddle(struct Gamepiece *p) {
 
 void moveCheck(struct Gamepiece *g) {
     if (g->moved) {
-        g->moved = 0;
+        g->moved = false;
         paintPaddle(*g);
     }
     return;
@@ -186,14 +187,14 @@ void updateBall(struct Gamestate *g) {
     lookAheadX = g->ball.x + g->ball.speedX;
     if (lookAheadX <= g->player.x + 1 &&
         ! g->interpolateTry) {
-        g->interpolateTry = 1;
+        g->interpolateTry = true;
         g->ball.x = g->player.x + 1;
     } else if (lookAheadX >= g->comp.x - 1 &&
         ! g->interpolateTry) {
-        g->interpolateTry = 1;
+        g->interpolateTry = true;
         g->ball.x = g->comp.x - 1;
     } else {
-        g->interpolateTry = 0;
+        g->interpolateTry = false;
         g->ball.x += g->ball.speedX;
     }
     g->ball.y += g->ball.speedY;
@@ -205,11 +206,11 @@ void updateBall(struct Gamestate *g) {
 void updatePaddles(struct Gamestate *g) {
     if (g->player.moveY == 1 && g->player.y > CEILING + 1) {
         g->player.y -= 2;
-        g->player.moved = 1;
+        g->player.moved = true;
         g->player.moveY = 0;
     } else if (g->player.moveY == -1 && g->player.y < LINES - 3 - g->player.size) {
         g->player.y += 2;
-        g->player.moved = 1;
+        g->player.moved = true;
         g->player.moveY = 0;
     }
     /* current method: randomly decide if comp player moves to align itself with the ball 
@@ -228,7 +229,7 @@ void updatePaddles(struct Gamestate *g) {
         } else if (g->ball.y < g->comp.y + 2 &&
                    g->comp.y > CEILING + 1) {
             g->comp.y--;
-            g->comp.moved = 1;
+            g->comp.moved = true;
         }
     }
     moveCheck(&g->player);
@@ -251,7 +252,7 @@ void updateTime(struct Gamestate *g) {
     gettimeofday(&g->t1, NULL);
     if (getElapsed(g->t0, g->t1) > DELAY_60FPS) {
         g->frame++;
-        g->newFrameFlag = 1;
+        g->newFrameFlag = true;
         cols = COLS;
         lines = LINES;
         refresh();
@@ -261,6 +262,6 @@ void updateTime(struct Gamestate *g) {
         }
         gettimeofday(&g->t0, NULL);
     } else {
-        g->newFrameFlag = 0;
+        g->newFrameFlag = false;
     }
 }

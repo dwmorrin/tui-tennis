@@ -2,6 +2,7 @@
 #define TUITENNIS
 
 #include <ncurses.h>
+#include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/time.h>
@@ -14,7 +15,8 @@
 #define EXIT_MESSAGE "DONE press any key"
 
 struct Gamepiece {
-    int x, y, direction, size, moved, moveX, moveY,
+    bool moved;
+    int x, y, direction, size, moveX, moveY,
         speedX, speedY, angle, power,
         score;
 } player, comp, ball;
@@ -25,7 +27,8 @@ struct Gamepiece {
  *   once or else the ball gets stuck.
  */
 struct Gamestate {
-    int input, speed, frame, newFrameFlag, gameOver, nextServe, run, interpolateTry;
+    int input, speed, frame, nextServe;
+    bool newFrameFlag, gameOver, run, interpolateTry;
     struct Gamepiece player, comp, ball;
     struct timeval t0, t1;
 } gamestate;

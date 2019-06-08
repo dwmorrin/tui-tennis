@@ -28,7 +28,7 @@ int main() {
         }
 
         if (gamestate.gameOver) {
-            gamestate.gameOver = 0;
+            gamestate.gameOver = false;
             initGame(&gamestate);
         }
         updateBall(&gamestate);
@@ -43,5 +43,5 @@ int main() {
     getch();
     endwin();
 
-    exit(0);
+    exit(EXIT_SUCCESS);
 }
