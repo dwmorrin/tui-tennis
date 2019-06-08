@@ -10,13 +10,14 @@ int main() {
     noecho();                   /* do not echo characters to the screen */
     /* end curses initialization */
 
-    struct Gamestate g;
-    g.speed = 4;
-    g.newFrameFlag = 1;
-    g.gameOver = 1;
-    g.nextServe = 1;
-    g.run = 1;
-    g.interpolateTry = 0;
+    struct Gamestate g = {
+        .speed = 4,
+        .newFrameFlag = 1,
+        .gameOver = 1,
+        .nextServe = 1,
+        .run = 1,
+        .interpolateTry = 0
+    };
 
     /* timer init */
     gettimeofday(&g.t0, NULL);
