@@ -102,7 +102,7 @@ void handleInput(struct Gamestate *g) {
 void handleResize(struct Gamestate *g, int oldCols, int oldLines) {
     // TODO need to blank and redraw screen, possibly refactor main.c
     // into an init function we can call here
-    GameReset(g);
+    GamestateReset(g);
     return;
 }
 
@@ -135,28 +135,28 @@ void BallInit(struct Gamepiece *ball) {
     ball->speedX = DEFAULT_BALL_SPEED;
 }
 
-void GameReset(struct Gamestate *g) {
-    char *readysetgo[] = {"READY", "SET", "GO"};
-    int i, l;
-    if (g->nextServe == 1) { /* player's serve */
-        g->ball.x = 2;
+void GamestateReset(struct Gamestate *gamestate) {
+    gamestate->gameOver = false;
+    if (gamestate->nextServe == 1) { /* player's serve */
+        gamestate->ball.x = 2;
     } else {
-        g->ball.x = COLS - 3;
+        gamestate->ball.x = COLS - 3;
     }
-    g->ball.y = LINES / 2;
-    g->ball.speedY = 1;
-    g->ball.speedX = DEFAULT_BALL_SPEED * g->nextServe;
-    PaddlePaint(g->player);
-    PaddlePaint(g->comp);
-    updateSpeed(g);
+    gamestate->ball.y = LINES / 2;
+    gamestate->ball.speedY = 1;
+    gamestate->ball.speedX = DEFAULT_BALL_SPEED * gamestate->nextServe;
+    PaddlePaint(gamestate->player);
+    PaddlePaint(gamestate->comp);
+    updateSpeed(gamestate);
 
-    for (i = 0; i < 3; i++) {
-        l = strlen(readysetgo[i]);
-        mvprintw(LINES/2, COLS/2 - l/2, "%s", readysetgo[i]);
+    char *readysetgo[] = {"READY", "SET", "GO"};
+    for (int i = 0; i < 3; i++) {
+        int length = strlen(readysetgo[i]);
+        mvprintw(LINES/2, COLS/2 - length/2, "%s", readysetgo[i]);
         refresh();
         sleep(1);
-        mvprintw(LINES/2, COLS/2 - l/2, "%s", "          ");
-    } // TODO something better for blanking the line
+        mvprintw(LINES/2, COLS/2 - length/2, "%s", "     ");
+    }
 
     return;
 }

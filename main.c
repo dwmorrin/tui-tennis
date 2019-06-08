@@ -11,9 +11,9 @@ int main() {
         }
 
         if (gamestate.gameOver) {
-            gamestate.gameOver = false;
-            GameReset(&gamestate);
+            GamestateReset(&gamestate);
         }
+
         updateBall(&gamestate);
         updatePaddles(&gamestate);
         updateTime(&gamestate);
