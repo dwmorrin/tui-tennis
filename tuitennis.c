@@ -1,7 +1,7 @@
 #include "tuitennis.h"
 
-void collisionCheck(struct Gamestate *g) {
-    if (g->ball.y <= CEILING + 1) {// || {
+void BallCollisionCheck(struct Gamestate *g) {
+    if (g->ball.y <= CEILING + 1) {
         g->ball.y = CEILING + 1;
         g->ball.speedY = -g->ball.speedY;
     }
@@ -19,19 +19,27 @@ void collisionCheck(struct Gamestate *g) {
         g->gameOver = true;
     }
     if (g->ball.x == g->player.x + 1) {
-        collisionHandler(&g->player, &g->ball);
+        PaddleCollisionHandler(&g->player, &g->ball);
     }
     if (g->ball.x == g->comp.x - 1) {
-        collisionHandler(&g->comp, &g->ball);
+        PaddleCollisionHandler(&g->comp, &g->ball);
     }
     return;
 }
 
+void BallInit(struct Gamepiece *ball) {
+    ball->x = 1;
+    ball->y = LINES / 2;
+    ball->size = 1;
+    ball->speedY = 1;
+    ball->speedX = DEFAULT_BALL_SPEED;
+}
+
 /**
- * collisionHandler tests for collision between paddle and ball
+ * PaddleCollisionHandler tests for collision between paddle and ball
  *   and determines resulting speed for ball
  */
-void collisionHandler(struct Gamepiece *paddle, struct Gamepiece *ball) {
+void PaddleCollisionHandler(struct Gamepiece *paddle, struct Gamepiece *ball) {
    if (ball->y >= paddle->y &&
        ball->y <= paddle->y + paddle->size) {
       ball->speedX = -ball->speedX;
@@ -70,7 +78,7 @@ void GamestateInit(struct Gamestate *gamestate) {
     srand(time(NULL));
 }
 
-long long getElapsed(struct timeval t0, struct timeval t1) {
+long long TimeGetElapsed(struct timeval t0, struct timeval t1) {
     return (t1.tv_sec - t0.tv_sec) * 1e6 + (t1.tv_usec - t0.tv_usec);
 }
 
@@ -90,7 +98,7 @@ void handleInput(struct Gamestate *g) {
             break;
         case 'j':
         case 'k':
-            updateSpeed(g);
+            SpeedUpdate(g);
             break;
         case 'q':
             g->run = 0;
@@ -127,14 +135,6 @@ void NcursesExit(void) {
     exit(EXIT_SUCCESS);
 }
 
-void BallInit(struct Gamepiece *ball) {
-    ball->x = 1;
-    ball->y = LINES / 2;
-    ball->size = 1;
-    ball->speedY = 1;
-    ball->speedX = DEFAULT_BALL_SPEED;
-}
-
 void GamestateReset(struct Gamestate *gamestate) {
     gamestate->gameOver = false;
     if (gamestate->nextServe == 1) { /* player's serve */
@@ -147,7 +147,7 @@ void GamestateReset(struct Gamestate *gamestate) {
     gamestate->ball.speedX = DEFAULT_BALL_SPEED * gamestate->nextServe;
     PaddlePaint(gamestate->player);
     PaddlePaint(gamestate->comp);
-    updateSpeed(gamestate);
+    SpeedUpdate(gamestate);
 
     char *readysetgo[] = {"READY", "SET", "GO"};
     for (int i = 0; i < 3; i++) {
@@ -194,7 +194,7 @@ void PaddleScore(struct Gamepiece *paddle) {
     mvprintw(LINES - 1, x, "%d", paddle->score);
 }
 
-void updateBall(struct Gamestate *g) {
+void BallUpdate(struct Gamestate *g) {
     int lookAheadX;
     if (! g->newFrameFlag ||
           g->frame % g->speed != 0) {
@@ -221,12 +221,12 @@ void updateBall(struct Gamestate *g) {
         g->ball.x += g->ball.speedX;
     }
     g->ball.y += g->ball.speedY;
-    collisionCheck(g);
+    BallCollisionCheck(g);
     mvaddch(g->ball.y, g->ball.x, 'o');
     return;
 }
 
-void updatePaddles(struct Gamestate *g) {
+void PaddlesUpdate(struct Gamestate *g) {
     if (g->player.moveY == 1 && g->player.y > CEILING + 1) {
         g->player.y -= 2;
         g->player.moved = true;
@@ -273,7 +273,7 @@ void updateSpeed(struct Gamestate *g) {
 void updateTime(struct Gamestate *g) {
     int cols, lines;
     gettimeofday(&g->t1, NULL);
-    if (getElapsed(g->t0, g->t1) > DELAY_60FPS) {
+    if (TimeGetElapsed(g->t0, g->t1) > DELAY_60FPS) {
         g->frame++;
         g->newFrameFlag = true;
         cols = COLS;

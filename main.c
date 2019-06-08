@@ -14,9 +14,9 @@ int main() {
             GamestateReset(&gamestate);
         }
 
-        updateBall(&gamestate);
-        updatePaddles(&gamestate);
-        updateTime(&gamestate);
+        BallUpdate(&gamestate);
+        PaddlesUpdate(&gamestate);
+        TimeUpdate(&gamestate);
     }
     NcursesExit();
 }

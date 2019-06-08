@@ -28,23 +28,23 @@ struct Gamestate {
     struct timeval t0, t1;
 } gamestate;
 
+void BallCollisionCheck(struct Gamestate*);
 void BallInit(struct Gamepiece*);
-void collisionCheck(struct Gamestate*);
-void collisionHandler(struct Gamepiece *paddle, struct Gamepiece *ball);
-long long getElapsed(struct timeval t0, struct timeval t1);
+void BallUpdate(struct Gamestate*);
 void GamestateInit(struct Gamestate*);
 void GamestateReset(struct Gamestate*);
 void handleInput(struct Gamestate*);
 void handleResize(struct Gamestate*, int oldCols, int oldLines);
 void NcursesInit(void);
 void NcursesExit(void);
+void PaddleCollisionHandler(struct Gamepiece *paddle, struct Gamepiece *ball);
 void PaddleInit(struct Gamepiece*);
 void PaddleMoveCheck(struct Gamepiece*);
 void PaddlePaint(struct Gamepiece);
 void PaddleScore(struct Gamepiece*);
-void updateBall(struct Gamestate*);
-void updatePaddles(struct Gamestate*);
-void updateSpeed(struct Gamestate*);
-void updateTime(struct Gamestate*);
+void PaddlesUpdate(struct Gamestate*);
+void SpeedUpdate(struct Gamestate*);
+long long TimeGetElapsed(struct timeval t0, struct timeval t1);
+void TimeUpdate(struct Gamestate*);
 
 #endif
