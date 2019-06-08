@@ -2,68 +2,21 @@
 #include "tuitennis.h"
 
 int main() {
-    /* curses initialization */
-    initscr();                  /* start curses mode */
-    curs_set(FALSE);            /* no cursor shown */
-    nodelay(stdscr, TRUE);      /* getch will be non-blocking */
-    cbreak();                   /* get characters immediately */
-    noecho();                   /* do not echo characters to the screen */
-    /* end curses initialization */
-
-    struct Gamestate g;
-    g.speed = 4;
-    g.newFrameFlag = 1;
-    g.gameOver = 1;
-    g.nextServe = 1;
-    g.run = 1;
-
-    /* timer init */
-    gettimeofday(&g.t0, NULL);
-
-    /* paddles init */
-    struct Gamepiece player, comp, ball;
-    initPaddle(&player);
-    initPaddle(&comp);
-    player.direction = 1;
-    comp.x = COLS - 1;
-    comp.direction = -1;
-
-    initBall(&ball);
-
-    g.ball = ball;
-    g.player = player;
-    g.comp = comp;
-
-    /* print some static strings to the screen */
-    mvaddstr(0, 0, BANNER_STRING);
-    mvaddstr(1, 0, "Game Speed: ");
-    mvhline(CEILING, 0, '_', COLS);
-
-    /* seed rand for the comp player actions */
-    srand(time(NULL));
-
-    /* MAIN LOOP */
-    while (g.run) {
+    NcursesInit();
+    GamestateInit(&gamestate);
+    while (gamestate.run) {
         /* catch user input, this is non-blocking */
-        if ((g.input = getch()) != ERR) { /* ERR is the default */
-            handleInput(&g);
+        if ((gamestate.input = getch()) != ERR) { /* ERR is the default */
+            handleInput(&gamestate);
         }
 
-        if (g.gameOver) {
-            g.gameOver = 0;
-            initGame(&g);
+        if (gamestate.gameOver) {
+            gamestate.gameOver = false;
+            GameReset(&gamestate);
         }
-        updateBall(&g);
-        updatePaddles(&g);
-        updateTime(&g);
+        updateBall(&gamestate);
+        updatePaddles(&gamestate);
+        updateTime(&gamestate);
     }
-
-    /* exit routine */
-    nodelay(stdscr, FALSE); /* allow getch to block */
-    mvprintw(LINES / 2, (COLS / 2) - strlen(EXIT_MESSAGE)/2, EXIT_MESSAGE);
-    refresh();
-    getch();
-    endwin();
-
-    exit(0);
+    NcursesExit();
 }
