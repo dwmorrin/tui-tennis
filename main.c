@@ -2,25 +2,8 @@
 #include "tuitennis.h"
 
 int main() {
-    /* curses initialization */
-    initscr();                  /* start curses mode */
-    curs_set(FALSE);            /* no cursor shown */
-    nodelay(stdscr, TRUE);      /* getch will be non-blocking */
-    cbreak();                   /* get characters immediately */
-    noecho();                   /* do not echo characters to the screen */
-    /* end curses initialization */
-
+    NcursesInit();
     GamestateInit(&gamestate);
-
-    /* print some static strings to the screen */
-    mvaddstr(0, 0, BANNER_STRING);
-    mvaddstr(1, 0, "Game Speed: ");
-    mvhline(CEILING, 0, '_', COLS);
-
-    /* seed rand for the comp player actions */
-    srand(time(NULL));
-
-    /* MAIN LOOP */
     while (gamestate.run) {
         /* catch user input, this is non-blocking */
         if ((gamestate.input = getch()) != ERR) { /* ERR is the default */

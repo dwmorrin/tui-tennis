@@ -41,6 +41,7 @@ void GameReset(struct Gamestate*);
 void GamestateInit(struct Gamestate*);
 void handleInput(struct Gamestate *g);
 void handleResize(struct Gamestate *g, int oldCols, int oldLines);
+void NcursesInit(void);
 void PaddleInit(struct Gamepiece*);
 void PaddleMoveCheck(struct Gamepiece*);
 void PaddlePaint(struct Gamepiece);

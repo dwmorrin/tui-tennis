@@ -66,6 +66,8 @@ void GamestateInit(struct Gamestate *gamestate) {
     gamestate->player = player;
     gamestate->comp = comp;
     gettimeofday(&gamestate->t0, NULL);
+    /* seed rand for the comp player actions */
+    srand(time(NULL));
 }
 
 long long getElapsed(struct timeval t0, struct timeval t1) {
@@ -102,6 +104,18 @@ void handleResize(struct Gamestate *g, int oldCols, int oldLines) {
     // into an init function we can call here
     GameReset(g);
     return;
+}
+
+void NcursesInit(void) {
+    initscr();             /* start curses mode */
+    curs_set(FALSE);       /* no cursor shown */
+    nodelay(stdscr, TRUE); /* getch be non-blocking */
+    cbreak();              /* get chars immediately */
+    noecho();              /* do not echo chars */
+    /* print some static strings to the screen */
+    mvaddstr(0, 0, BANNER_STRING);
+    mvaddstr(1, 0, "Game Speed: ");
+    mvhline(CEILING, 0, '_', COLS);
 }
 
 void BallInit(struct Gamepiece *ball) {
