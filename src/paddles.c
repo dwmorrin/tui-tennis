@@ -4,7 +4,9 @@ void PaddleAiMove(struct Gamestate *g) {
     if (! g->newFrameFlag) {
         return;
     }
-    bool compMoves = rand() % 100 > 95 - ((g->ball.x / 4) * g->ball.speedX);
+    int randomNumber = rand() % 100,
+        nearnessFactor = g->ball.x * g->ball.speedX / 4;
+    bool compMoves = randomNumber > g->difficulty - nearnessFactor;
     if (compMoves) {
         /*track ball */
         if (g->ball.y > g->comp.y + 2 &&

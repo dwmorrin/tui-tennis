@@ -17,7 +17,7 @@ all: $(exe)
 $(exe): $(objs)
 	$(CC) $(LDFLAGS) $^ $(LDLIBS) -o $@
 
-$(objDir)/%.o: $(srcDir)/%.c
+$(objDir)/%.o: $(srcDir)/%.c include/*.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
 clean:

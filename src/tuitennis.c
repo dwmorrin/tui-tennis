@@ -1,6 +1,17 @@
 #include "tuitennis.h"
 
+void GamestateDifficultyUpdate(struct Gamestate *g) {
+    if (g->input == '+' && g->difficulty > DIFFICULTY_MIN) {
+        g->difficulty--;
+    }
+    if (g->input == '-' && g->difficulty < DIFFICULTY_MAX) {
+        g->difficulty++;
+    }
+    mvprintw(LINES - 1, COLS / 2, "diff: %d", g->difficulty);
+}
+
 void GamestateInit(struct Gamestate *gamestate) {
+    gamestate->difficulty = 95;
     gamestate->speed = 4;
     gamestate->newFrameFlag = true;
     gamestate->gameOver = true;
@@ -67,6 +78,10 @@ void handleInput(struct Gamestate *g) {
             break;
         case 'q':
             g->run = 0;
+            break;
+        case '+':
+        case '-':
+            GamestateDifficultyUpdate(g);
             break;
     }
     g->input = ERR;
