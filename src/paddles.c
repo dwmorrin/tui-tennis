@@ -5,31 +5,35 @@ void PaddleAiMove(struct Gamestate *g) {
         return;
     }
     int randomNumber = rand() % 100,
-        nearnessFactor = g->ball.x * g->ball.speedX / 4;
+        nearnessFactor = g->ball->x * g->ball->speedX / 4;
     bool compMoves = randomNumber > g->difficulty - nearnessFactor;
     if (compMoves) {
         /*track ball */
-        if (g->ball.y > g->comp.y + 2 &&
-            g->comp.y < LINES - 3 - g->comp.size) {
-            g->comp.y++;
-            g->comp.moved = 1;
-        } else if (g->ball.y < g->comp.y + 2 &&
-                   g->comp.y > CEILING + 1) {
-            g->comp.y--;
-            g->comp.moved = true;
+        if (g->ball->y > g->comp->y + 2 &&
+            g->comp->y < LINES - 3 - g->comp->size) {
+            g->comp->y++;
+            g->comp->moved = true;
+        } else if (g->ball->y < g->comp->y + 2 &&
+                   g->comp->y > CEILING + 1) {
+            g->comp->y--;
+            g->comp->moved = true;
         }
+    }
+    if (g->comp->moved) {
+        g->comp->moved = false;
+        PaddlePaint(g->comp);
     }
 }
 
-void PaddleBoundsCheck(struct Gamestate *g) {
-    if (g->player.moveY == 1 && g->player.y > CEILING + 1) {
-        g->player.y -= 2;
-        g->player.moved = true;
-        g->player.moveY = 0;
-    } else if (g->player.moveY == -1 && g->player.y < LINES - 3 - g->player.size) {
-        g->player.y += 2;
-        g->player.moved = true;
-        g->player.moveY = 0;
+void PaddleBoundsCheck(struct Gamepiece *paddle) {
+    if (paddle->moveY == 1 && paddle->y > CEILING + 1) {
+        paddle->y -= 2;
+        paddle->moved = true;
+        paddle->moveY = 0;
+    } else if (paddle->moveY == -1 && paddle->y < LINES - 3 - paddle->size) {
+        paddle->y += 2;
+        paddle->moved = true;
+        paddle->moveY = 0;
     }
 }
 
@@ -63,19 +67,31 @@ void PaddleInit(struct Gamepiece *p) {
     return;
 }
 
-void PaddleMoveCheck(struct Gamepiece *paddle) {
-    if (paddle->moved) {
-        paddle->moved = false;
-        PaddlePaint(*paddle);
+void PaddleMove(struct Gamepiece *paddle, int input) {
+    switch (input) {
+        case 'w':
+            paddle->moveY = MOVE_SCALE;
+            break;
+        case 's':
+            paddle->moveY = -MOVE_SCALE;
+            break;
+        case 'a':
+            paddle->moveX = MOVE_SCALE;
+            break;
+        case 'd':
+            paddle->moveX = -MOVE_SCALE;
+            break;
     }
+    PaddleBoundsCheck(paddle);
+    PaddlePaint(paddle);
     return;
 }
 
-void PaddlePaint(struct Gamepiece paddle) {
-    move(CEILING, paddle.x);
+void PaddlePaint(struct Gamepiece *paddle) {
+    move(CEILING, paddle->x);
     vline(' ', LINES - CEILING - 2);
-    move(paddle.y, paddle.x);
-    vline('|', paddle.size);
+    move(paddle->y, paddle->x);
+    vline('|', paddle->size);
     return;
 }
 
@@ -86,12 +102,4 @@ void PaddleScore(struct Gamepiece *paddle) {
     }
     paddle->score++;
     mvprintw(LINES - 1, x, "%d", paddle->score);
-}
-
-void PaddlesUpdate(struct Gamestate *g) {
-    PaddleBoundsCheck(g);
-    PaddleAiMove(g);
-    PaddleMoveCheck(&g->player);
-    PaddleMoveCheck(&g->comp);
-    return;
 }

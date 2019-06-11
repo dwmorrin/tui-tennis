@@ -15,6 +15,7 @@
 #define DELAY_60FPS 16667 
 #define DIFFICULTY_MIN 50
 #define DIFFICULTY_MAX 150
+#define MOVE_SCALE 1 /*LINES / 10*/
 
 /* string constants */
 #define BANNER_STRING "TEXT USER INTERFACE TENNIS | up: w, down: s, quit: q"
@@ -30,7 +31,7 @@ struct Gamepiece {
 struct Gamestate {
     int difficulty, input, speed, frame, nextServe;
     bool newFrameFlag, gameOver, run, interpolateTry;
-    struct Gamepiece player, comp, ball;
+    struct Gamepiece *player, *comp, *ball;
     struct timeval t0, t1;
 } gamestate;
 
@@ -45,13 +46,12 @@ void handleResize(struct Gamestate*, int oldCols, int oldLines);
 void NcursesInit(void);
 void NcursesExit(void);
 void PaddleAiMove(struct Gamestate*);
-void PaddleBoundsCheck(struct Gamestate*);
+void PaddleBoundsCheck(struct Gamepiece*);
 void PaddleCollisionHandler(struct Gamepiece *paddle, struct Gamepiece *ball);
 void PaddleInit(struct Gamepiece*);
-void PaddleMoveCheck(struct Gamepiece*);
-void PaddlePaint(struct Gamepiece);
+void PaddleMove(struct Gamepiece*, int);
+void PaddlePaint(struct Gamepiece*);
 void PaddleScore(struct Gamepiece*);
-void PaddlesUpdate(struct Gamestate*);
 void SpeedUpdate(struct Gamestate*);
 long long TimeGetElapsed(struct timeval t0, struct timeval t1);
 void TimeUpdate(struct Gamestate*);

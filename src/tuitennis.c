@@ -24,9 +24,9 @@ void GamestateInit(struct Gamestate *gamestate) {
     comp.x = COLS - 1;
     comp.direction = -1;
     BallInit(&ball);
-    gamestate->ball = ball;
-    gamestate->player = player;
-    gamestate->comp = comp;
+    gamestate->ball = &ball;
+    gamestate->player = &player;
+    gamestate->comp = &comp;
     gettimeofday(&gamestate->t0, NULL);
     /* seed rand for the comp player actions */
     srand(time(NULL));
@@ -35,13 +35,13 @@ void GamestateInit(struct Gamestate *gamestate) {
 void GamestateReset(struct Gamestate *gamestate) {
     gamestate->gameOver = false;
     if (gamestate->nextServe == 1) { /* player's serve */
-        gamestate->ball.x = 2;
+        gamestate->ball->x = 2;
     } else {
-        gamestate->ball.x = COLS - 3;
+        gamestate->ball->x = COLS - 3;
     }
-    gamestate->ball.y = LINES / 2;
-    gamestate->ball.speedY = 1;
-    gamestate->ball.speedX = DEFAULT_BALL_SPEED * gamestate->nextServe;
+    gamestate->ball->y = LINES / 2;
+    gamestate->ball->speedY = 1;
+    gamestate->ball->speedX = DEFAULT_BALL_SPEED * gamestate->nextServe;
     PaddlePaint(gamestate->player);
     PaddlePaint(gamestate->comp);
     SpeedUpdate(gamestate);
@@ -61,16 +61,10 @@ void GamestateReset(struct Gamestate *gamestate) {
 void handleInput(struct Gamestate *g) {
     switch (g->input) {
         case 'w':
-            g->player.moveY = 1;
-            break;
         case 's':
-            g->player.moveY = -1;
-            break;
         case 'a':
-            g->player.moveX = 1;
-            break;
         case 'd':
-            g->player.moveX = -1;
+            PaddleMove(g->player, g->input);
             break;
         case 'j':
         case 'k':
