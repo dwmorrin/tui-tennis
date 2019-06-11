@@ -1,31 +1,5 @@
 #include "tuitennis.h"
 
-void BallCollisionCheck(struct Gamestate *g) {
-    if (g->ball->y <= CEILING + 1) {
-        g->ball->y = CEILING + 1;
-        g->ball->speedY = -g->ball->speedY;
-    }
-    if (g->ball->y >= LINES - 3) {
-        g->ball->y = LINES - 3;
-        g->ball->speedY = -g->ball->speedY;
-    }
-    if (g->ball->x <= 0) {
-        PaddleScore(g->comp);
-        g->nextServe = 1;
-        g->gameOver = true;
-    } else if (g->ball->x >= COLS) {
-        PaddleScore(g->player);
-        g->nextServe = -1;
-        g->gameOver = true;
-    }
-    if (g->ball->x == g->player->x + 1) {
-        PaddleCollisionHandler(g->player, g->ball);
-    }
-    if (g->ball->x == g->comp->x - 1) {
-        PaddleCollisionHandler(g->comp, g->ball);
-    }
-    return;
-}
 
 void BallInit(struct Gamepiece *ball) {
     ball->x = 1;
@@ -62,7 +36,8 @@ void BallUpdate(struct Gamestate *g) {
         g->ball->x += g->ball->speedX;
     }
     g->ball->y += g->ball->speedY;
-    BallCollisionCheck(g);
-    mvaddch(g->ball->y, g->ball->x, 'o');
-    return;
+}
+
+void BallPaint(struct Gamepiece *ball) {
+    mvaddch(ball->y, ball->x, 'o');
 }

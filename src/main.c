@@ -10,16 +10,15 @@ int main() {
         if ((game->input = getch()) != ERR) { /* ERR is the default */
             handleInput(game); // player move
         }
-
         PaddleAiMove(game); // comp move
-
         BallUpdate(game); // ball move
-
+        GamestateCollisionCheck(game);
         if (game->gameOver) {
             GamestateReset(game);
+            continue;
         }
+        BallPaint(game->ball);
         TimeUpdate(game);
-
     }
     NcursesExit();
 }

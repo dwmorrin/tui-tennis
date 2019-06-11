@@ -35,9 +35,10 @@ struct Gamestate {
     struct timeval t0, t1;
 } gamestate;
 
-void BallCollisionCheck(struct Gamestate*);
 void BallInit(struct Gamepiece*);
+void BallPaint(struct Gamepiece*);
 void BallUpdate(struct Gamestate*);
+void GamestateCollisionCheck(struct Gamestate*);
 void GamestateDifficultyUpdate(struct Gamestate*);
 void GamestateInit(struct Gamestate*);
 void GamestateReset(struct Gamestate*);
