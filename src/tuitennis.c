@@ -1,28 +1,30 @@
 #include "tuitennis.h"
 
 void GamestateCollisionCheck(struct Gamestate *g) {
+    /* bounce ball off top of screen */
     if (g->ball->y <= CEILING + 1) {
         g->ball->y = CEILING + 1;
         g->ball->speedY = -g->ball->speedY;
     }
+    /* bounce ball off bottom of screen */
     if (g->ball->y >= LINES - 3) {
         g->ball->y = LINES - 3;
         g->ball->speedY = -g->ball->speedY;
     }
-    if (g->ball->x <= 0) {
-        PaddleScore(g->comp);
-        g->nextServe = 1;
-        g->gameOver = true;
-    } else if (g->ball->x >= COLS) {
-        PaddleScore(g->player);
-        g->nextServe = -1;
-        g->gameOver = true;
+    /* bounce ball off paddle, or end round */
+    if (g->ball->x <= g->player->x) {
+        if (! PaddleCollisionHandler(g->player, g->ball)) {
+            PaddleScore(g->comp);
+            g->nextServe = 1;
+            g->gameOver = true;
+        }
     }
-    if (g->ball->x == g->player->x + 1) {
-        PaddleCollisionHandler(g->player, g->ball);
-    }
-    if (g->ball->x == g->comp->x - 1) {
-        PaddleCollisionHandler(g->comp, g->ball);
+    if (g->ball->x >= g->comp->x) {
+        if (! PaddleCollisionHandler(g->comp, g->ball)) {
+            PaddleScore(g->player);
+            g->nextServe = -1;
+            g->gameOver = true;
+        }
     }
 }
 

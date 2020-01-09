@@ -35,6 +35,7 @@ struct Gamestate {
     struct timeval t0, t1;
 } gamestate;
 
+double BallGetPathY(struct Gamepiece*, int);
 void BallInit(struct Gamepiece*);
 void BallPaint(struct Gamepiece*);
 void BallUpdate(struct Gamestate*);
@@ -48,7 +49,8 @@ void NcursesInit(void);
 void NcursesExit(void);
 void PaddleAiMove(struct Gamestate*);
 void PaddleBoundsCheck(struct Gamepiece*);
-void PaddleCollisionHandler(struct Gamepiece *paddle, struct Gamepiece *ball);
+bool PaddleCollisionCheck(struct Gamepiece*, struct Gamepiece*);
+bool PaddleCollisionHandler(struct Gamepiece *paddle, struct Gamepiece *ball);
 void PaddleInit(struct Gamepiece*);
 void PaddleMove(struct Gamepiece*, int);
 void PaddlePaint(struct Gamepiece*);

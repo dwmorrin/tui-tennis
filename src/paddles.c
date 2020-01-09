@@ -39,24 +39,41 @@ void PaddleBoundsCheck(struct Gamepiece *paddle) {
 
 /**
  * PaddleCollisionHandler tests for collision between paddle and ball
- *   and determines resulting speed for ball
  */
-void PaddleCollisionHandler(struct Gamepiece *paddle, struct Gamepiece *ball) {
+bool PaddleCollisionCheck(struct Gamepiece *paddle, struct Gamepiece *ball) {
    if (ball->y >= paddle->y &&
        ball->y <= paddle->y + paddle->size) {
-      ball->speedX = -ball->speedX;
-      if (ball->y == paddle->y) {
-          ball->speedY = -2;
-      } else if (ball->y == paddle->y + 1) {
-          ball->speedY = -1;
-      } else if (ball->y == paddle->y + 2) {
-          ball->speedY = 0;
-      } else if (ball->y == paddle->y + 3) {
-          ball->speedY = 1;
-      } else if (ball->y == paddle->y + 4) {
-          ball->speedY = 2;
-      }
+       return true;
    } 
+   return false;
+}
+
+/**
+ * PaddleCollisionHandler determines resulting speed for ball
+ */
+bool PaddleCollisionHandler(struct Gamepiece *paddle, struct Gamepiece *ball) {
+    if (! PaddleCollisionCheck(paddle, ball)) {
+        return false;
+    }
+    ball->speedX = -ball->speedX;
+    /* move ball off paddle */
+    if (ball->speedX > 0) {
+        ball->x += 1;
+    } else {
+        ball->x -= 1;
+    }
+    if (ball->y == paddle->y) {
+        ball->speedY = -2;
+    } else if (ball->y == paddle->y + 1) {
+        ball->speedY = -1;
+    } else if (ball->y == paddle->y + 2) {
+        ball->speedY = 0;
+    } else if (ball->y == paddle->y + 3) {
+        ball->speedY = 1;
+    } else if (ball->y == paddle->y + 4) {
+        ball->speedY = 2;
+    }
+    return true;
 }
 
 void PaddleInit(struct Gamepiece *p) {

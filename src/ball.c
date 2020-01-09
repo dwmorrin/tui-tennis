@@ -10,7 +10,6 @@ void BallInit(struct Gamepiece *ball) {
 }
 
 void BallUpdate(struct Gamestate *g) {
-    int lookAheadX;
     if (! g->newFrameFlag ||
           g->frame % g->speed != 0) {
         return;
@@ -21,23 +20,31 @@ void BallUpdate(struct Gamestate *g) {
     } else {
         mvaddch(g->ball->y, g->ball->x, ' ');
     }
-    /* update ball */
-    lookAheadX = g->ball->x + g->ball->speedX;
-    if (lookAheadX <= g->player->x + 1 &&
-        ! g->interpolateTry) {
-        g->interpolateTry = true;
-        g->ball->x = g->player->x + 1;
-    } else if (lookAheadX >= g->comp->x - 1 &&
-        ! g->interpolateTry) {
-        g->interpolateTry = true;
-        g->ball->x = g->comp->x - 1;
-    } else {
-        g->interpolateTry = false;
-        g->ball->x += g->ball->speedX;
+    int newX = g->ball->x + g->ball->speedX;
+    int newY = g->ball->y + g->ball->speedY;
+    /* update ball position, x limited to paddles */
+    if (newX < g->player->x) {
+        newY = BallGetPathY(g->ball, g->player->x);
+        newX = g->player->x;
+    } else if (newX > g->comp->x) {
+        newY = BallGetPathY(g->ball, g->comp->x);
+        newX = g->comp->x;
     }
-    g->ball->y += g->ball->speedY;
+    g->ball->y = newY;
+    g->ball->x = newX;
 }
 
 void BallPaint(struct Gamepiece *ball) {
     mvaddch(ball->y, ball->x, 'o');
+}
+
+
+/**
+ * gets expected y (line) value for when ball is at
+ * position x (column).  use to lookahead at ball's
+ * path.
+ */
+double BallGetPathY(struct Gamepiece *ball, int x) {
+    double rate = (double)ball->speedY / (double)ball->speedX;
+    return rate * (x - ball->x) + ball->y;
 }
