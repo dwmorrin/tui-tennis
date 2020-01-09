@@ -1,31 +1,5 @@
 #include "tuitennis.h"
 
-void BallCollisionCheck(struct Gamestate *g) {
-    if (g->ball.y <= CEILING + 1) {
-        g->ball.y = CEILING + 1;
-        g->ball.speedY = -g->ball.speedY;
-    }
-    if (g->ball.y >= LINES - 3) {
-        g->ball.y = LINES - 3;
-        g->ball.speedY = -g->ball.speedY;
-    }
-    if (g->ball.x <= 0) {
-        PaddleScore(&g->comp);
-        g->nextServe = 1;
-        g->gameOver = true;
-    } else if (g->ball.x >= COLS) {
-        PaddleScore(&g->player);
-        g->nextServe = -1;
-        g->gameOver = true;
-    }
-    if (g->ball.x == g->player.x + 1) {
-        PaddleCollisionHandler(&g->player, &g->ball);
-    }
-    if (g->ball.x == g->comp.x - 1) {
-        PaddleCollisionHandler(&g->comp, &g->ball);
-    }
-    return;
-}
 
 void BallInit(struct Gamepiece *ball) {
     ball->x = 1;
@@ -36,33 +10,41 @@ void BallInit(struct Gamepiece *ball) {
 }
 
 void BallUpdate(struct Gamestate *g) {
-    int lookAheadX;
     if (! g->newFrameFlag ||
           g->frame % g->speed != 0) {
         return;
     }
     /* delete the old ball */
-    if (g->ball.y == CEILING) {
-        mvaddch(g->ball.y, g->ball.x, '_');
+    if (g->ball->y == CEILING) {
+        mvaddch(g->ball->y, g->ball->x, '_');
     } else {
-        mvaddch(g->ball.y, g->ball.x, ' ');
+        mvaddch(g->ball->y, g->ball->x, ' ');
     }
-    /* update ball */
-    lookAheadX = g->ball.x + g->ball.speedX;
-    if (lookAheadX <= g->player.x + 1 &&
-        ! g->interpolateTry) {
-        g->interpolateTry = true;
-        g->ball.x = g->player.x + 1;
-    } else if (lookAheadX >= g->comp.x - 1 &&
-        ! g->interpolateTry) {
-        g->interpolateTry = true;
-        g->ball.x = g->comp.x - 1;
-    } else {
-        g->interpolateTry = false;
-        g->ball.x += g->ball.speedX;
+    int newX = g->ball->x + g->ball->speedX;
+    int newY = g->ball->y + g->ball->speedY;
+    /* update ball position, x limited to paddles */
+    if (newX < g->player->x) {
+        newY = BallGetPathY(g->ball, g->player->x);
+        newX = g->player->x;
+    } else if (newX > g->comp->x) {
+        newY = BallGetPathY(g->ball, g->comp->x);
+        newX = g->comp->x;
     }
-    g->ball.y += g->ball.speedY;
-    BallCollisionCheck(g);
-    mvaddch(g->ball.y, g->ball.x, 'o');
-    return;
+    g->ball->y = newY;
+    g->ball->x = newX;
+}
+
+void BallPaint(struct Gamepiece *ball) {
+    mvaddch(ball->y, ball->x, 'o');
+}
+
+
+/**
+ * gets expected y (line) value for when ball is at
+ * position x (column).  use to lookahead at ball's
+ * path.
+ */
+double BallGetPathY(struct Gamepiece *ball, int x) {
+    double rate = (double)ball->speedY / (double)ball->speedX;
+    return rate * (x - ball->x) + ball->y;
 }

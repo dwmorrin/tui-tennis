@@ -3,20 +3,22 @@
 
 int main() {
     NcursesInit();
-    GamestateInit(&gamestate);
-    while (gamestate.run) {
+    struct Gamestate *game = &gamestate;
+    GamestateInit(game);
+    while (game->run) {
         /* catch user input, this is non-blocking */
-        if ((gamestate.input = getch()) != ERR) { /* ERR is the default */
-            handleInput(&gamestate);
+        if ((game->input = getch()) != ERR) { /* ERR is the default */
+            handleInput(game); // player move
         }
-
-        if (gamestate.gameOver) {
-            GamestateReset(&gamestate);
+        PaddleAiMove(game); // comp move
+        BallUpdate(game); // ball move
+        GamestateCollisionCheck(game);
+        if (game->gameOver) {
+            GamestateReset(game);
+            continue;
         }
-
-        BallUpdate(&gamestate);
-        PaddlesUpdate(&gamestate);
-        TimeUpdate(&gamestate);
+        BallPaint(game->ball);
+        TimeUpdate(game);
     }
     NcursesExit();
 }
