@@ -2,12 +2,12 @@
 
 void GamestateCollisionCheck(struct Gamestate *g) {
     /* bounce ball off top of screen */
-    if (g->ball->y <= CEILING + 1) {
+    if (g->ball->y <= CEILING) {
         g->ball->y = CEILING + 1;
         g->ball->speedY = -g->ball->speedY;
     }
     /* bounce ball off bottom of screen */
-    if (g->ball->y >= LINES - 3) {
+    if (g->ball->y >= LINES - 2) {
         g->ball->y = LINES - 3;
         g->ball->speedY = -g->ball->speedY;
     }
