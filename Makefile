@@ -20,5 +20,10 @@ $(exe): $(objs)
 $(objDir)/%.o: $(srcDir)/%.c include/*.h
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
+$(objs): | $(objDir)
+
+$(objDir):
+	mkdir $(objDir)
+
 clean:
 	$(RM) $(objs) $(exe)
