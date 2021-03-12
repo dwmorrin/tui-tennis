@@ -8,7 +8,7 @@ int main() {
     while (game->run) {
         /* catch user input, this is non-blocking */
         if ((game->input = getch()) != ERR) { /* ERR is the default */
-            handleInput(game); // player move
+            GamestateOnInput(game); // player move
         }
         PaddleAiMove(game); // comp move
         BallUpdate(game); // ball move
@@ -18,7 +18,10 @@ int main() {
             continue;
         }
         BallPaint(game->ball);
-        TimeUpdate(game);
+        if (TimeUpdate(game)) {
+            // TODO handle screen resize event
+            refresh();
+        }
     }
     NcursesExit();
 }

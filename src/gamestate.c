@@ -72,7 +72,7 @@ void GamestateReset(struct Gamestate *gamestate) {
     gamestate->ball->speedX = DEFAULT_BALL_SPEED * gamestate->nextServe;
     PaddlePaint(gamestate->player);
     PaddlePaint(gamestate->comp);
-    SpeedUpdate(gamestate);
+    GamestateSpeedUpdate(gamestate);
 
     char *readysetgo[] = {"READY", "SET", "GO"};
     for (int i = 0; i < 3; i++) {
@@ -86,7 +86,7 @@ void GamestateReset(struct Gamestate *gamestate) {
     return;
 }
 
-void handleInput(struct Gamestate *g) {
+void GamestateOnInput(struct Gamestate *g) {
     switch (g->input) {
         case 'w':
         case 's':
@@ -96,7 +96,7 @@ void handleInput(struct Gamestate *g) {
             break;
         case 'j':
         case 'k':
-            SpeedUpdate(g);
+            GamestateSpeedUpdate(g);
             break;
         case 'q':
             g->run = 0;
@@ -109,35 +109,14 @@ void handleInput(struct Gamestate *g) {
     g->input = ERR;
 }
 
-void handleResize(struct Gamestate *g, int oldCols, int oldLines) {
+void GamestateOnResize(struct Gamestate *g, int oldCols, int oldLines) {
     // TODO need to blank and redraw screen, possibly refactor main.c
     // into an init function we can call here
     GamestateReset(g);
     return;
 }
 
-void NcursesInit(void) {
-    initscr();             /* start curses mode */
-    curs_set(FALSE);       /* no cursor shown */
-    nodelay(stdscr, TRUE); /* getch be non-blocking */
-    cbreak();              /* get chars immediately */
-    noecho();              /* do not echo chars */
-    /* print some static strings to the screen */
-    mvaddstr(0, 0, BANNER_STRING);
-    mvaddstr(1, 0, "Game Speed: ");
-    mvhline(CEILING, 0, '_', COLS);
-}
-
-void NcursesExit(void) {
-    nodelay(stdscr, FALSE); /* allow getch to block */
-    mvprintw(LINES / 2, (COLS / 2) - strlen(EXIT_MESSAGE)/2, EXIT_MESSAGE);
-    refresh();
-    getch();
-    endwin();
-    exit(EXIT_SUCCESS);
-}
-
-void SpeedUpdate(struct Gamestate *g) {
+void GamestateSpeedUpdate(struct Gamestate *g) {
     if (g->input == 'k' && g->speed > 1) {
         g->speed--;
     } else if (g->input == 'j' && g->speed < 10) {
@@ -145,4 +124,12 @@ void SpeedUpdate(struct Gamestate *g) {
     }
     mvprintw(1, 13, "%d  (slower: j, faster: k)", 11 - g->speed);
     return;
+}
+
+/*
+ * Prints message to 3rd line
+ * good for debugging
+ */
+void GamestatePrintMessage(const char* str) {
+    mvprintw(2, 0, str);
 }

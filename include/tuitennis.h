@@ -42,9 +42,11 @@ void BallUpdate(struct Gamestate*);
 void GamestateCollisionCheck(struct Gamestate*);
 void GamestateDifficultyUpdate(struct Gamestate*);
 void GamestateInit(struct Gamestate*);
+void GamestateOnInput(struct Gamestate*);
+void GamestateOnResize(struct Gamestate*, int oldCols, int oldLines);
+void GamestatePrintMessage(const char*);
 void GamestateReset(struct Gamestate*);
-void handleInput(struct Gamestate*);
-void handleResize(struct Gamestate*, int oldCols, int oldLines);
+void GamestateSpeedUpdate(struct Gamestate*);
 void NcursesInit(void);
 void NcursesExit(void);
 void PaddleAiMove(struct Gamestate*);
@@ -55,8 +57,7 @@ void PaddleInit(struct Gamepiece*);
 void PaddleMove(struct Gamepiece*, int);
 void PaddlePaint(struct Gamepiece*);
 void PaddleScore(struct Gamepiece*);
-void SpeedUpdate(struct Gamestate*);
 long long TimeGetElapsed(struct timeval t0, struct timeval t1);
-void TimeUpdate(struct Gamestate*);
+bool TimeUpdate(struct Gamestate*);
 
 #endif
