@@ -17,14 +17,18 @@ int main() {
         if ((game.input = getch()) != ERR) { /* ERR is the default */
             GamestateOnInput(&game); // player move
         }
-        PaddleAiMove(&game); // comp move
-        BallUpdate(&game); // ball move
-        GamestateCollisionCheck(&game);
-        if (game.gameOver) {
-            GamestateReset(&game);
-            continue;
+        if (game.countdown) {
+            if (game.newFrameFlag) GamestatePrintCountdown(&game);
+        } else {
+            PaddleAiMove(&game); // comp move
+            BallUpdate(&game); // ball move
+            GamestateCollisionCheck(&game);
+            if (game.gameOver) {
+                GamestateReset(&game);
+                continue;
+            }
+            BallPaint(&ball);
         }
-        BallPaint(&ball);
         if (TimeUpdate(&game)) {
             // TODO handle screen resize event
             refresh();

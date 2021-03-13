@@ -29,7 +29,7 @@ struct Gamepiece {
 };
 
 struct Gamestate {
-    int difficulty, input, speed, frame, nextServe;
+    int difficulty, input, speed, frame, nextServe, countdown;
     bool newFrameFlag, gameOver, run, interpolateTry;
     struct Gamepiece *player, *comp, *ball;
     struct timeval t0, t1;
@@ -49,6 +49,7 @@ void GamestateInit(
 );
 void GamestateOnInput(struct Gamestate*);
 void GamestateOnResize(struct Gamestate*, int oldCols, int oldLines);
+void GamestatePrintCountdown(struct Gamestate *);
 void GamestatePrintMessage(const char*);
 void GamestateReset(struct Gamestate*);
 void GamestateSpeedUpdate(struct Gamestate*);

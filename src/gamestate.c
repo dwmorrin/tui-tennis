@@ -51,6 +51,7 @@ void GamestateInit(
     gamestate->nextServe = 1;
     gamestate->run = true;
     gamestate->interpolateTry = false;
+    gamestate->countdown = 0;
     player->direction = 1;
     comp->x = COLS - 1;
     comp->direction = -1;
@@ -64,6 +65,7 @@ void GamestateInit(
 
 void GamestateReset(struct Gamestate *gamestate) {
     gamestate->gameOver = false;
+    gamestate->countdown = 300;
     if (gamestate->nextServe == 1) { /* player's serve */
         gamestate->ball->x = 2;
     } else {
@@ -75,17 +77,23 @@ void GamestateReset(struct Gamestate *gamestate) {
     PaddlePaint(gamestate->player);
     PaddlePaint(gamestate->comp);
     GamestateSpeedUpdate(gamestate);
+}
 
-    char *readysetgo[] = {"READY", "SET", "GO"};
-    for (int i = 0; i < 3; i++) {
-        int length = strlen(readysetgo[i]);
-        mvprintw(LINES/2, COLS/2 - length/2, "%s", readysetgo[i]);
-        refresh();
-        sleep(1);
-        mvprintw(LINES/2, COLS/2 - length/2, "%s", "     ");
-    }
+void printCenter(const char* message) {
+    mvprintw(LINES/2, COLS/2 - strlen(message)/2, "%s", message);
+}
 
-    return;
+void GamestatePrintCountdown(struct Gamestate *gamestate) {
+    printCenter("      ");
+    // if == 1, just blank and decrement, else print message
+    if (gamestate->countdown > 1)
+        printCenter(gamestate->countdown > 200
+            ? "READY"
+            : gamestate->countdown > 100
+                ? "SET"
+                : "GO"
+        );
+    --gamestate->countdown;
 }
 
 void GamestateOnInput(struct Gamestate *g) {
@@ -115,7 +123,6 @@ void GamestateOnResize(struct Gamestate *g, int oldCols, int oldLines) {
     // TODO need to blank and redraw screen, possibly refactor main.c
     // into an init function we can call here
     GamestateReset(g);
-    return;
 }
 
 void GamestateSpeedUpdate(struct Gamestate *g) {
@@ -125,7 +132,6 @@ void GamestateSpeedUpdate(struct Gamestate *g) {
         g->speed++;
     }
     mvprintw(1, 13, "%d  (slower: j, faster: k)", 11 - g->speed);
-    return;
 }
 
 /*
