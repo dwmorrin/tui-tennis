@@ -26,14 +26,14 @@ struct Gamepiece {
     int x, y, direction, size, moveX, moveY,
         speedX, speedY, angle, power,
         score;
-} player, comp, ball;
+};
 
 struct Gamestate {
     int difficulty, input, speed, frame, nextServe;
     bool newFrameFlag, gameOver, run, interpolateTry;
     struct Gamepiece *player, *comp, *ball;
     struct timeval t0, t1;
-} gamestate;
+};
 
 double BallGetPathY(struct Gamepiece*, int);
 void BallInit(struct Gamepiece*);
@@ -41,7 +41,12 @@ void BallPaint(struct Gamepiece*);
 void BallUpdate(struct Gamestate*);
 void GamestateCollisionCheck(struct Gamestate*);
 void GamestateDifficultyUpdate(struct Gamestate*);
-void GamestateInit(struct Gamestate*);
+void GamestateInit(
+    struct Gamestate*,
+    struct Gamepiece*,
+    struct Gamepiece*,
+    struct Gamepiece*
+);
 void GamestateOnInput(struct Gamestate*);
 void GamestateOnResize(struct Gamestate*, int oldCols, int oldLines);
 void GamestatePrintMessage(const char*);

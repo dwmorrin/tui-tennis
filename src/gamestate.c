@@ -38,7 +38,12 @@ void GamestateDifficultyUpdate(struct Gamestate *g) {
     mvprintw(LINES - 1, COLS / 2, "diff: %d", g->difficulty);
 }
 
-void GamestateInit(struct Gamestate *gamestate) {
+void GamestateInit(
+    struct Gamestate *gamestate,
+    struct Gamepiece *player,
+    struct Gamepiece *comp,
+    struct Gamepiece *ball
+) {
     gamestate->difficulty = 95;
     gamestate->speed = 4;
     gamestate->newFrameFlag = true;
@@ -46,15 +51,12 @@ void GamestateInit(struct Gamestate *gamestate) {
     gamestate->nextServe = 1;
     gamestate->run = true;
     gamestate->interpolateTry = false;
-    PaddleInit(&player);
-    PaddleInit(&comp);
-    player.direction = 1;
-    comp.x = COLS - 1;
-    comp.direction = -1;
-    BallInit(&ball);
-    gamestate->ball = &ball;
-    gamestate->player = &player;
-    gamestate->comp = &comp;
+    player->direction = 1;
+    comp->x = COLS - 1;
+    comp->direction = -1;
+    gamestate->ball = ball;
+    gamestate->player = player;
+    gamestate->comp = comp;
     gettimeofday(&gamestate->t0, NULL);
     /* seed rand for the comp player actions */
     srand(time(NULL));
