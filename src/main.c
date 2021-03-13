@@ -8,6 +8,7 @@ struct Gamepiece player;
 
 int main() {
     NcursesInit();
+    GamestatePrintTopLines();
     PaddleInit(&player);
     PaddleInit(&comp);
     BallInit(&ball);

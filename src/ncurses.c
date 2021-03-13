@@ -16,7 +16,9 @@ void NcursesInit(void) {
     cbreak();              /* get chars immediately */
     noecho();              /* do not echo chars */
     /* print some static strings to the screen */
-    mvaddstr(0, 0, BANNER_STRING);
-    mvaddstr(1, 0, "Game Speed: ");
-    mvhline(CEILING, 0, '_', COLS);
 }
+
+void NcursesPrintCenter(const char* message) {
+    mvprintw(LINES/2, COLS/2 - strlen(message)/2, "%s", message);
+}
+

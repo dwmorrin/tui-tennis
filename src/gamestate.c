@@ -1,5 +1,11 @@
 #include "tuitennis.h"
 
+void GamestatePrintTopLines() {
+    mvaddstr(0, 0, BANNER_STRING);
+    mvaddstr(1, 0, "Game Speed: ");
+    mvhline(CEILING, 0, '_', COLS);
+}
+
 void GamestateCollisionCheck(struct Gamestate *g) {
     /* bounce ball off top of screen */
     if (g->ball->y <= CEILING) {
@@ -79,15 +85,11 @@ void GamestateReset(struct Gamestate *gamestate) {
     GamestateSpeedUpdate(gamestate);
 }
 
-void printCenter(const char* message) {
-    mvprintw(LINES/2, COLS/2 - strlen(message)/2, "%s", message);
-}
-
 void GamestatePrintCountdown(struct Gamestate *gamestate) {
-    printCenter("      ");
+    NcursesPrintCenter("      ");
     // if == 1, just blank and decrement, else print message
     if (gamestate->countdown > 1)
-        printCenter(gamestate->countdown > 200
+        NcursesPrintCenter(gamestate->countdown > 200
             ? "READY"
             : gamestate->countdown > 100
                 ? "SET"
@@ -98,6 +100,9 @@ void GamestatePrintCountdown(struct Gamestate *gamestate) {
 
 void GamestateOnInput(struct Gamestate *g) {
     switch (g->input) {
+        case KEY_RESIZE:
+            GamestateOnResize(g);
+            break;
         case 'w':
         case 's':
         case 'a':
@@ -119,9 +124,25 @@ void GamestateOnInput(struct Gamestate *g) {
     g->input = ERR;
 }
 
-void GamestateOnResize(struct Gamestate *g, int oldCols, int oldLines) {
-    // TODO need to blank and redraw screen, possibly refactor main.c
-    // into an init function we can call here
+void GamestateOnResize(struct Gamestate *g) {
+    nodelay(stdscr, false);
+    endwin();
+    refresh();
+    nodelay(stdscr, false);
+    int key = 0;
+    do {
+    clear();
+    NcursesPrintCenter("Done resizing?");
+    refresh();
+    key = getch();
+    } while (key != 'y' && key != 'Y');
+    clear();
+    nodelay(stdscr, true);
+    GamestatePrintTopLines();
+    PaddleInit(g->comp);
+    PaddleInit(g->player);
+    BallInit(g->ball);
+    GamestateInit(g, g->player, g->comp, g->ball);
     GamestateReset(g);
 }
 

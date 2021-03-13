@@ -48,13 +48,15 @@ void GamestateInit(
     struct Gamepiece*
 );
 void GamestateOnInput(struct Gamestate*);
-void GamestateOnResize(struct Gamestate*, int oldCols, int oldLines);
+void GamestateOnResize(struct Gamestate*);
 void GamestatePrintCountdown(struct Gamestate *);
 void GamestatePrintMessage(const char*);
+void GamestatePrintTopLines(void);
 void GamestateReset(struct Gamestate*);
 void GamestateSpeedUpdate(struct Gamestate*);
 void NcursesInit(void);
 void NcursesExit(void);
+void NcursesPrintCenter(const char*);
 void PaddleAiMove(struct Gamestate*);
 void PaddleBoundsCheck(struct Gamepiece*);
 bool PaddleCollisionCheck(struct Gamepiece*, struct Gamepiece*);
