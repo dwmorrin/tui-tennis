@@ -11,11 +11,18 @@
 
 /* magic numbers */
 #define CEILING 3
-#define DEFAULT_BALL_SPEED 4
-#define DELAY_60FPS 16667 
+#define DEFAULT_BALL_SPEED 1
+#define FRAME_DELAY_uS 100000
 #define DIFFICULTY_MIN 50
 #define DIFFICULTY_MAX 150
-#define MOVE_SCALE 1 /*LINES / 10*/
+#define MOVE_SCALE 2
+
+/* controls */
+#define UP 'w'
+#define DOWN 's'
+#define LEFT 'a'
+#define RIGHT 'd'
+#define QUIT 'q'
 
 /* string constants */
 #define BANNER_STRING "TEXT USER INTERFACE TENNIS | up: w, down: s, quit: q"
@@ -30,7 +37,7 @@ struct Gamepiece {
 
 struct Gamestate {
     int difficulty, input, speed, frame, nextServe, countdown;
-    bool newFrameFlag, gameOver, run, interpolateTry;
+    bool newFrameFlag, gameOver, run;
     struct Gamepiece *player, *comp, *ball;
     struct timeval t0, t1;
 };

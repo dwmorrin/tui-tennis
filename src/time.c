@@ -7,7 +7,7 @@ long long TimeGetElapsed(struct timeval t0, struct timeval t1) {
 // true if new flag set
 bool TimeUpdate(struct Gamestate *g) {
     gettimeofday(&g->t1, NULL);
-    if (TimeGetElapsed(g->t0, g->t1) > DELAY_60FPS) {
+    if (TimeGetElapsed(g->t0, g->t1) > g->speed) {
         g->frame++;
         g->newFrameFlag = true;
         gettimeofday(&g->t0, NULL);

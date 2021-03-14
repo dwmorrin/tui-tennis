@@ -51,12 +51,11 @@ void GamestateInit(
     struct Gamepiece *ball
 ) {
     gamestate->difficulty = 95;
-    gamestate->speed = 4;
+    gamestate->speed = FRAME_DELAY_uS;
     gamestate->newFrameFlag = true;
     gamestate->gameOver = true;
     gamestate->nextServe = 1;
     gamestate->run = true;
-    gamestate->interpolateTry = false;
     gamestate->countdown = 0;
     player->direction = 1;
     comp->x = COLS - 1;
@@ -71,7 +70,7 @@ void GamestateInit(
 
 void GamestateReset(struct Gamestate *gamestate) {
     gamestate->gameOver = false;
-    gamestate->countdown = 300;
+    gamestate->countdown = 10;
     if (gamestate->nextServe == 1) { /* player's serve */
         gamestate->ball->x = 2;
     } else {
@@ -89,9 +88,9 @@ void GamestatePrintCountdown(struct Gamestate *gamestate) {
     NcursesPrintCenter("      ");
     // if == 1, just blank and decrement, else print message
     if (gamestate->countdown > 1)
-        NcursesPrintCenter(gamestate->countdown > 200
+        NcursesPrintCenter(gamestate->countdown > 6
             ? "READY"
-            : gamestate->countdown > 100
+            : gamestate->countdown > 3
                 ? "SET"
                 : "GO"
         );
@@ -103,17 +102,17 @@ void GamestateOnInput(struct Gamestate *g) {
         case KEY_RESIZE:
             GamestateOnResize(g);
             break;
-        case 'w':
-        case 's':
-        case 'a':
-        case 'd':
+        case UP:
+        case DOWN:
+        case LEFT:
+        case RIGHT:
             PaddleMove(g->player, g->input);
             break;
         case 'j':
         case 'k':
             GamestateSpeedUpdate(g);
             break;
-        case 'q':
+        case QUIT:
             g->run = false;
             break;
         case '+':
@@ -138,10 +137,10 @@ void GamestateOnResize(struct Gamestate *g) {
     nodelay(stdscr, false);
     int key = 0;
     do {
-    clear();
-    NcursesPrintCenter("Done resizing?");
-    refresh();
-    key = getch();
+        clear();
+        NcursesPrintCenter("Done resizing?");
+        refresh();
+        key = getch();
     } while (key != 'y' && key != 'Y');
     clear();
     nodelay(stdscr, true);
@@ -159,7 +158,7 @@ void GamestateSpeedUpdate(struct Gamestate *g) {
     } else if (g->input == 'j' && g->speed < 10) {
         g->speed++;
     }
-    mvprintw(1, 13, "%d  (slower: j, faster: k)", 11 - g->speed);
+    mvprintw(1, 13, "%d  (slower: j, faster: k)", g->speed);
 }
 
 /*

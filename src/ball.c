@@ -10,10 +10,7 @@ void BallInit(struct Gamepiece *ball) {
 }
 
 void BallUpdate(struct Gamestate *g) {
-    if (! g->newFrameFlag ||
-          g->frame % g->speed != 0) {
-        return;
-    }
+    if (! g->newFrameFlag) return;
     /* delete the old ball */
     if (g->ball->y == CEILING) {
         mvaddch(g->ball->y, g->ball->x, '_');

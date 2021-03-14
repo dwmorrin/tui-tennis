@@ -15,9 +15,7 @@ int main() {
     GamestateInit(&game, &player, &comp, &ball);
     while (game.run) {
         /* catch user input, this is non-blocking */
-        if ((game.input = getch()) != ERR) { /* ERR is the default */
-            GamestateOnInput(&game); // player move
-        }
+        if ((game.input = getch()) != ERR) GamestateOnInput(&game);
         if (game.countdown) {
             if (game.newFrameFlag) GamestatePrintCountdown(&game);
         } else {
@@ -30,10 +28,7 @@ int main() {
             }
             BallPaint(&ball);
         }
-        if (TimeUpdate(&game)) {
-            // TODO handle screen resize event
-            refresh();
-        }
+        if (TimeUpdate(&game)) refresh();
     }
     NcursesExit();
 }
