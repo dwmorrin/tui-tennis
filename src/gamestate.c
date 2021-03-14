@@ -114,11 +114,18 @@ void GamestateOnInput(struct Gamestate *g) {
             GamestateSpeedUpdate(g);
             break;
         case 'q':
-            g->run = 0;
+            g->run = false;
             break;
         case '+':
         case '-':
             GamestateDifficultyUpdate(g);
+            break;
+        // for debugging: toggle nodelay to step or run
+        case 'r':
+            nodelay(stdscr, true);
+            break;
+        case 'b':
+            nodelay(stdscr, false);
             break;
     }
     g->input = ERR;
