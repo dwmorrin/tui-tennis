@@ -1,4 +1,12 @@
-#include "tuitennis.h"
+#include <time.h>
+#include <stdlib.h>
+
+#include "Ball.h"
+#include "Gamestate.h"
+#include "Ncurses.h"
+#include "Paddle.h"
+#include "Time.h"
+#include "input.h"
 
 void GamestatePrintTopLines() {
     mvaddstr(0, 0, BANNER_STRING);
@@ -165,4 +173,17 @@ void GamestateSpeedUpdate(struct Gamestate *g) {
  */
 void GamestatePrintMessage(const char* str) {
     mvprintw(2, 0, str);
+}
+
+// true if new flag set
+bool GamestateTimeUpdate(struct Gamestate *g) {
+    gettimeofday(&g->t1, NULL);
+    if (TimeGetElapsed(g->t0, g->t1) > g->speed) {
+        g->frame++;
+        g->newFrameFlag = true;
+        gettimeofday(&g->t0, NULL);
+        return true;
+    }
+    g->newFrameFlag = false;
+    return false;
 }

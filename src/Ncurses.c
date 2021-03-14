@@ -1,4 +1,6 @@
-#include "tuitennis.h"
+#include <stdlib.h>
+
+#include "Ncurses.h"
 
 void NcursesExit(void) {
     nodelay(stdscr, FALSE); /* allow getch to block */

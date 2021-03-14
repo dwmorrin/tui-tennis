@@ -1,5 +1,10 @@
 /* tennis game utilizing ncurses for a text based user interface */
-#include "tuitennis.h"
+
+#include "Ball.h"
+#include "Gamepiece.h"
+#include "Gamestate.h"
+#include "Ncurses.h"
+#include "Paddle.h"
 
 struct Gamestate game;
 struct Gamepiece ball;
@@ -36,7 +41,7 @@ int main() {
             GamestatePrintMessage(debug);
 #endif
         }
-        if (TimeUpdate(&game)) refresh();
+        if (GamestateTimeUpdate(&game)) refresh();
     }
     NcursesExit();
 }

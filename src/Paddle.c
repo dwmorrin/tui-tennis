@@ -1,4 +1,10 @@
-#include "tuitennis.h"
+#include <stdbool.h>
+#include <stdlib.h>
+
+#include "Ncurses.h"
+#include "Gamestate.h"
+#include "Paddle.h"
+#include "input.h"
 
 bool compMoves(struct Gamestate *g) {
     int randomNumber = rand() % 100,

@@ -1,4 +1,8 @@
-#include "tuitennis.h"
+#include <math.h>
+
+#include "Ncurses.h"
+#include "Gamestate.h"
+#include "Ball.h"
 
 
 void BallInit(struct Gamepiece *ball) {
