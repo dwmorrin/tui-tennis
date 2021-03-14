@@ -2,7 +2,7 @@
 
 void GamestatePrintTopLines() {
     mvaddstr(0, 0, BANNER_STRING);
-    mvaddstr(1, 0, "Game Speed: ");
+    mvaddstr(1, 0, "Frame delay: ");
     mvhline(CEILING, 0, '_', COLS);
 }
 
@@ -153,12 +153,10 @@ void GamestateOnResize(struct Gamestate *g) {
 }
 
 void GamestateSpeedUpdate(struct Gamestate *g) {
-    if (g->input == 'k' && g->speed > 1) {
-        g->speed--;
-    } else if (g->input == 'j' && g->speed < 10) {
-        g->speed++;
-    }
-    mvprintw(1, 13, "%d  (slower: j, faster: k)", g->speed);
+    int step = FRAME_DELAY_uS / 20;
+    if (g->input == 'k') g->speed += step;
+    else if (g->input == 'j') g->speed -= step;
+    mvprintw(1, 13, "%d mS (less delay: j, more delay: k)", g->speed/1000);
 }
 
 /*

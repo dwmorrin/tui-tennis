@@ -18,17 +18,17 @@ void BallUpdate(struct Gamestate *g) {
         mvaddch(g->ball->y, g->ball->x, ' ');
     }
     int newX = g->ball->x + g->ball->speedX;
-    int newY = g->ball->y + g->ball->speedY;
     /* update ball position, x limited to paddles */
     if (newX < g->player->x) {
-        newY = BallGetPathY(g->ball, g->player->x);
-        newX = g->player->x;
+        g->ball->y = BallGetPathY(g->ball, g->player->x);
+        g->ball->x = g->player->x;
     } else if (newX > g->comp->x) {
-        newY = BallGetPathY(g->ball, g->comp->x);
-        newX = g->comp->x;
+        g->ball->y = BallGetPathY(g->ball, g->comp->x);
+        g->ball->x = g->comp->x;
+    } else {
+        g->ball->y = BallGetPathY(g->ball, newX);
+        g->ball->x = newX;
     }
-    g->ball->y = newY;
-    g->ball->x = newX;
 }
 
 void BallPaint(struct Gamepiece *ball) {
