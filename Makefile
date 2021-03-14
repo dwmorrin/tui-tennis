@@ -8,7 +8,7 @@ objs = $(src:$(srcDir)/%.c=$(objDir)/%.o)
 
 CPPFLAGS += -Iinclude
 CFLAGS += -Wall
-LDLIBS += -lncurses
+LDLIBS += -lncurses -lm
 
 .PHONY: all clean
 

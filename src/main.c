@@ -6,6 +6,10 @@ struct Gamepiece ball;
 struct Gamepiece comp;
 struct Gamepiece player;
 
+#ifdef DEBUG
+char debug[80];
+#endif
+
 int main() {
     NcursesInit();
     GamestatePrintTopLines();
@@ -27,6 +31,10 @@ int main() {
                 continue;
             }
             BallPaint(&ball);
+#ifdef DEBUG
+            sprintf(debug, "ball: (%g,%g), (%g,%g)", ball.x,ball.y,ball.speedX,ball.speedY);
+            GamestatePrintMessage(debug);
+#endif
         }
         if (TimeUpdate(&game)) refresh();
     }

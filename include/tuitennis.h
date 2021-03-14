@@ -1,6 +1,7 @@
 #ifndef TUITENNIS
 #define TUITENNIS
 
+#include <math.h>
 #include <ncurses.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -11,7 +12,7 @@
 
 /* magic numbers */
 #define CEILING 3
-#define DEFAULT_BALL_SPEED 1
+#define DEFAULT_BALL_SPEED 2.0
 #define FRAME_DELAY_uS 100000
 #define DIFFICULTY_MIN 50
 #define DIFFICULTY_MAX 150
@@ -30,9 +31,9 @@
 
 struct Gamepiece {
     bool moved;
-    int x, y, direction, size, moveX, moveY,
-        speedX, speedY, angle, power,
-        score;
+    double x, y, speedX, speedY;
+    int direction, size, moveX, moveY,
+        angle, power, score;
 };
 
 struct Gamestate {
@@ -42,7 +43,7 @@ struct Gamestate {
     struct timeval t0, t1;
 };
 
-double BallGetPathY(struct Gamepiece*, int);
+double BallGetPathY(struct Gamepiece*, double);
 void BallInit(struct Gamepiece*);
 void BallPaint(struct Gamepiece*);
 void BallUpdate(struct Gamestate*);

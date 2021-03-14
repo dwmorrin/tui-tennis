@@ -2,21 +2,21 @@
 
 
 void BallInit(struct Gamepiece *ball) {
-    ball->x = 1;
-    ball->y = LINES / 2;
+    ball->x = 1.0;
+    ball->y = LINES / 2.;
     ball->size = 1;
-    ball->speedY = 1;
+    ball->speedY = 0.5;
     ball->speedX = DEFAULT_BALL_SPEED;
 }
 
 void BallUpdate(struct Gamestate *g) {
     if (! g->newFrameFlag) return;
+
     /* delete the old ball */
-    if (g->ball->y == CEILING) {
-        mvaddch(g->ball->y, g->ball->x, '_');
-    } else {
-        mvaddch(g->ball->y, g->ball->x, ' ');
-    }
+    int x = round(g->ball->x);
+    int y = round(g->ball->y);
+    mvaddch(y, x, y == CEILING ? '_' : ' ');
+
     int newX = g->ball->x + g->ball->speedX;
     /* update ball position, x limited to paddles */
     if (newX < g->player->x) {
@@ -32,7 +32,7 @@ void BallUpdate(struct Gamestate *g) {
 }
 
 void BallPaint(struct Gamepiece *ball) {
-    mvaddch(ball->y, ball->x, 'o');
+    mvaddch(round(ball->y), round(ball->x), 'o');
 }
 
 
@@ -41,7 +41,7 @@ void BallPaint(struct Gamepiece *ball) {
  * position x (column).  use to lookahead at ball's
  * path.
  */
-double BallGetPathY(struct Gamepiece *ball, int x) {
-    double rate = (double)ball->speedY / (double)ball->speedX;
-    return rate * (x - ball->x) + ball->y;
+double BallGetPathY(struct Gamepiece *ball, double x) {
+    double rate = ball->speedY / ball->speedX;
+    return rate * (x - (double)ball->x) + (double)ball->y;
 }

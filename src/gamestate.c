@@ -77,7 +77,7 @@ void GamestateReset(struct Gamestate *gamestate) {
         gamestate->ball->x = COLS - 3;
     }
     gamestate->ball->y = LINES / 2;
-    gamestate->ball->speedY = 1;
+    gamestate->ball->speedY = 0.5;
     gamestate->ball->speedX = DEFAULT_BALL_SPEED * gamestate->nextServe;
     PaddlePaint(gamestate->player);
     PaddlePaint(gamestate->comp);
