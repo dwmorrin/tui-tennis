@@ -1,4 +1,5 @@
 #include <math.h>
+#include <stdbool.h>
 
 #include "Ncurses.h"
 #include "Gamestate.h"
@@ -36,7 +37,10 @@ void BallUpdate(struct Gamestate *g) {
 }
 
 void BallPaint(struct Gamepiece *ball) {
-    mvaddch(round(ball->y), round(ball->x), 'o');
+    // alternate between two characters for animation
+    static bool alt = false;
+    alt = !alt;
+    mvaddch(round(ball->y), round(ball->x), alt ? '-' : '_');
 }
 
 
