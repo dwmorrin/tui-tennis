@@ -1,7 +1,8 @@
 #include <math.h>
+#include <ncurses.h>
 #include <stdbool.h>
 
-#include "Ncurses.h"
+#include "Tui.h"
 #include "Gamestate.h"
 #include "Ball.h"
 
@@ -14,33 +15,23 @@ void BallInit(struct Gamepiece *ball) {
     ball->speedX = DEFAULT_BALL_SPEED;
 }
 
-void BallUpdate(struct Gamestate *g) {
-    if (! g->newFrameFlag) return;
-
+void BallMove(struct Gamepiece *ball) {
     /* delete the old ball */
-    int x = round(g->ball->x);
-    int y = round(g->ball->y);
-    mvaddch(y, x, y == CEILING ? '_' : ' ');
+    int y = round(ball->y);
+    mvaddch(y, round(ball->x), y == CEILING ? '_' : ' ');
 
-    int newX = g->ball->x + g->ball->speedX;
-    /* update ball position, x limited to paddles */
-    if (newX < g->player->x) {
-        g->ball->y = BallGetPathY(g->ball, g->player->x);
-        g->ball->x = g->player->x;
-    } else if (newX > g->comp->x) {
-        g->ball->y = BallGetPathY(g->ball, g->comp->x);
-        g->ball->x = g->comp->x;
-    } else {
-        g->ball->y = BallGetPathY(g->ball, newX);
-        g->ball->x = newX;
-    }
+    ball->x += ball->speedX;
+    ball->y += ball->speedY;
 }
 
 void BallPaint(struct Gamepiece *ball) {
     // alternate between two characters for animation
     static bool alt = false;
     alt = !alt;
-    mvaddch(round(ball->y), round(ball->x), alt ? '-' : '_');
+
+    //mvaddch(round(ball->y), round(ball->x), alt ? '-' : '_');
+    //if (alt) mvaddch(round(ball->y), round(ball->x), 'o');
+    mvaddch(round(ball->y), round(ball->x), 'o');
 }
 
 

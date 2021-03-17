@@ -9,5 +9,5 @@
 double BallGetPathY(struct Gamepiece*, double);
 void BallInit(struct Gamepiece*);
 void BallPaint(struct Gamepiece*);
-void BallUpdate(struct Gamestate*);
+void BallMove(struct Gamepiece*);
 #endif

@@ -1,26 +1,18 @@
+#include <ncurses.h>
 #include <stdbool.h>
 #include <stdlib.h>
 
-#include "Ncurses.h"
+#include "Tui.h"
 #include "Gamestate.h"
 #include "Paddle.h"
 #include "input.h"
 
-bool compMoves(struct Gamestate *g) {
-    int randomNumber = rand() % 100,
-        nearnessFactor = g->ball->x * g->ball->speedX;
-    return randomNumber > g->difficulty - nearnessFactor;
-}
-
-void PaddleAiMove(struct Gamestate *g) {
-    if (! g->newFrameFlag) return;
-    if (compMoves(g)) {
-        /*track ball */
-        if (g->ball->y > g->comp->y + 2)
-            PaddleMove(g->comp, DOWN);
-        else if (g->ball->y < g->comp->y + 2)
-            PaddleMove(g->comp, UP);
-    }
+void PaddleAiMove(struct Gamepiece *paddle, struct Gamepiece *ball) {
+    /*track ball */
+    if (ball->y > paddle->y + 2)
+        PaddleMove(paddle, DOWN);
+    else if (ball->y < paddle->y + 2)
+        PaddleMove(paddle, UP);
 }
 
 void PaddleBoundsCheck(struct Gamepiece *paddle) {
@@ -42,11 +34,13 @@ void PaddleBoundsCheck(struct Gamepiece *paddle) {
  * PaddleCollisionHandler tests for collision between paddle and ball
  */
 bool PaddleCollisionCheck(struct Gamepiece *paddle, struct Gamepiece *ball) {
-   if (ball->y >= paddle->y - 1 &&
-       ball->y <= paddle->y + paddle->size) {
-       return true;
-   } 
-   return false;
+    if (ball->y >= paddle->y - 1 &&
+        ball->y <= paddle->y + paddle->size) {
+        // put ball back a move
+        ball->x -= ball->speedX;
+        return true;
+    } 
+    return false;
 }
 
 /**

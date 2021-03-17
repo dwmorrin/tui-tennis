@@ -6,7 +6,7 @@
 
 #define MOVE_SCALE 2
 
-void PaddleAiMove(struct Gamestate*);
+void PaddleAiMove(struct Gamepiece*, struct Gamepiece*);
 void PaddleBoundsCheck(struct Gamepiece*);
 bool PaddleCollisionCheck(struct Gamepiece*, struct Gamepiece*);
 bool PaddleCollisionHandler(struct Gamepiece *paddle, struct Gamepiece *ball);

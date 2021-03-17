@@ -1,17 +1,32 @@
 #include <time.h>
+#include <ncurses.h>
 #include <stdlib.h>
 
 #include "Ball.h"
 #include "Gamestate.h"
-#include "Ncurses.h"
+#include "Tui.h"
 #include "Paddle.h"
-#include "Time.h"
 #include "input.h"
+
+// private helper function
+long long TimeGetElapsed(struct timeval t0, struct timeval t1) {
+    return (t1.tv_sec - t0.tv_sec) * 1e6 + (t1.tv_usec - t0.tv_usec);
+}
 
 void GamestatePrintTopLines() {
     mvaddstr(0, 0, BANNER_STRING);
     mvaddstr(1, 0, "Frame delay: ");
     mvhline(CEILING, 0, '_', COLS);
+}
+
+bool GamestateComputerWillMove(struct Gamestate *g) {
+    int randomNumber = rand() % 100,
+        nearnessFactor = g->ball->x * g->ball->speedX;
+    return randomNumber > g->difficulty - nearnessFactor;
+}
+
+bool GamestatePlayerWillMove(struct Gamestate *g) {
+    return g->move != ERR;
 }
 
 void GamestateCollisionCheck(struct Gamestate *g) {
@@ -58,13 +73,15 @@ void GamestateInit(
     struct Gamepiece *comp,
     struct Gamepiece *ball
 ) {
+    gamestate->input = ERR;
+    gamestate->move = ERR;
     gamestate->difficulty = 95;
     gamestate->speed = FRAME_DELAY_uS;
     gamestate->newFrameFlag = true;
-    gamestate->gameOver = true;
+    gamestate->gameOver = false;
     gamestate->nextServe = 1;
     gamestate->run = true;
-    gamestate->countdown = 0;
+    gamestate->countdown = 10;
     player->direction = 1;
     comp->x = COLS - 1;
     comp->direction = -1;
@@ -93,10 +110,10 @@ void GamestateReset(struct Gamestate *gamestate) {
 }
 
 void GamestatePrintCountdown(struct Gamestate *gamestate) {
-    NcursesPrintCenter("      ");
+    TuiPrintCenter("      ");
     // if == 1, just blank and decrement, else print message
     if (gamestate->countdown > 1)
-        NcursesPrintCenter(gamestate->countdown > 6
+        TuiPrintCenter(gamestate->countdown > 6
             ? "READY"
             : gamestate->countdown > 3
                 ? "SET"
@@ -114,7 +131,8 @@ void GamestateOnInput(struct Gamestate *g) {
         case DOWN:
         case LEFT:
         case RIGHT:
-            PaddleMove(g->player, g->input);
+            g->move = g->input;
+            //PaddleMove(g->player, g->input);
             break;
         case 'j':
         case 'k':
@@ -146,7 +164,7 @@ void GamestateOnResize(struct Gamestate *g) {
     int key = 0;
     do {
         clear();
-        NcursesPrintCenter("Done resizing?");
+        TuiPrintCenter("Done resizing?");
         refresh();
         key = getch();
     } while (key != 'y' && key != 'Y');

@@ -11,13 +11,21 @@
 #define BANNER_STRING "TEXT USER INTERFACE TENNIS | up: w, down: s, quit: q"
 
 struct Gamestate {
-    int difficulty, input, speed, frame, nextServe, countdown;
+    int difficulty;
+    int input;
+    int move;
+    int speed;
+    int frame;
+    int nextServe;
+    int countdown;
     bool newFrameFlag, gameOver, run;
     struct Gamepiece *player, *comp, *ball;
     struct timeval t0, t1;
 };
 
 void GamestateCollisionCheck(struct Gamestate*);
+bool GamestateComputerWillMove(struct Gamestate*);
+bool GamestatePlayerWillMove(struct Gamestate*);
 void GamestateDifficultyUpdate(struct Gamestate*);
 void GamestateInit(
     struct Gamestate*,
